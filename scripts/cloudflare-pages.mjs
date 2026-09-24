@@ -22,10 +22,16 @@
 //   and legal pages. Each goes in every language, a directory name such as
 //   "blog" goes as a whole, and all are dropped from the sitemap.
 // - Points robots.txt at this site's sitemap when SITE_URL is set.
+// - Hosts the WASM engines, OCR data and fonts on this site when their URLs
+//   point under SITE_URL, instead of loading them from jsDelivr and githack,
+//   which many networks in mainland China cannot reach.
 // - Fails early if a file is still too large or there are too many files,
 //   rather than at deploy time.
+import { spawnSync } from 'node:child_process';
 import {
+  cpSync,
   existsSync,
+  mkdirSync,
   readFileSync,
   readdirSync,
   rmSync,
@@ -100,6 +106,192 @@ if (siteUrl && existsSync(robotsPath)) {
     )
   );
 }
+
+// Self-hosted assets. For each of the asset URLs below that points under
+// SITE_URL, the files it expects are fetched here, at the versions this build
+// loads from jsDelivr and githack by default, and put at that path. They must
+// be full URLs rather than paths: the PDF editor fetches its fonts from a
+// blob: worker, where a path cannot resolve.
+const siteOrigin = siteUrl && new URL(siteUrl).origin;
+const cacheDir = join(repoRoot, 'node_modules', '.cache', 'cloudflare-pages');
+const readSource = (file) => readFileSync(join(repoRoot, file), 'utf8');
+
+// The file or directory in dist/ that an asset URL on this site stands for.
+function selfHostedPath(name) {
+  const value = process.env[name]?.trim();
+  if (!value) {
+    return null;
+  }
+  if (!URL.canParse(value)) {
+    throw new Error(`${name} must be a full URL: ${value}`);
+  }
+  const url = new URL(value);
+  return url.origin === siteOrigin ? join(dist, url.pathname) : null;
+}
+
+// Splits a jsDelivr npm path, such as @bentopdf/gs-wasm@0.1.1/assets/, into
+// the package to install and where the path is once it is installed.
+function splitNpmPath(path) {
+  const match = path.match(/^((?:@[\w.-]+\/)?[\w.-]+)@([\w.-]+)\/(.*)$/);
+  if (!match) {
+    throw new Error(`Not a jsDelivr npm path: ${path}`);
+  }
+  const [, name, version, inner] = match;
+  return {
+    spec: `${name}@${version}`,
+    installed: join(cacheDir, 'node_modules', name, inner),
+  };
+}
+
+const packages = new Set();
+const copies = [];
+const downloads = [];
+
+const wasmProvider = readSource('src/js/utils/wasm-provider.ts');
+for (const [name, engine] of [
+  ['VITE_WASM_PYMUPDF_URL', 'pymupdf'],
+  ['VITE_WASM_GS_URL', 'ghostscript'],
+  ['VITE_WASM_CPDF_URL', 'cpdf'],
+]) {
+  const target = selfHostedPath(name);
+  if (!target) {
+    continue;
+  }
+  const path = wasmProvider.match(
+    new RegExp(`${engine}: 'https://cdn\\.jsdelivr\\.net/npm/([^']+)'`)
+  )?.[1];
+  if (!path) {
+    throw new Error(`No jsDelivr URL for ${engine} in wasm-provider.ts`);
+  }
+  const { spec, installed } = splitNpmPath(path);
+  packages.add(spec);
+  copies.push([installed, target]);
+}
+
+const tesseractWorker = selfHostedPath('VITE_TESSERACT_WORKER_URL');
+if (tesseractWorker) {
+  copies.push([
+    join(repoRoot, 'node_modules', 'tesseract.js', 'dist', 'worker.min.js'),
+    tesseractWorker,
+  ]);
+}
+const tesseractCore = selfHostedPath('VITE_TESSERACT_CORE_URL');
+if (tesseractCore) {
+  copies.push([
+    join(repoRoot, 'node_modules', 'tesseract.js-core'),
+    tesseractCore,
+  ]);
+}
+// The OCR runs Tesseract's LSTM engine alone (OEM 1), for which Tesseract.js
+// loads the 4.0.0_best_int data of each language.
+const tesseractData = selfHostedPath('VITE_TESSERACT_LANG_URL');
+if (tesseractData) {
+  const ocrLanguages = (process.env.VITE_TESSERACT_AVAILABLE_LANGUAGES || '')
+    .split(/[+,]/)
+    .map((code) => code.trim())
+    .filter(Boolean);
+  if (ocrLanguages.length === 0) {
+    throw new Error(
+      'List the OCR languages to host in VITE_TESSERACT_AVAILABLE_LANGUAGES'
+    );
+  }
+  for (const language of ocrLanguages) {
+    const file = `${language}.traineddata.gz`;
+    const data = `@tesseract.js-data/${language}`;
+    packages.add(data);
+    copies.push([
+      join(cacheDir, 'node_modules', data, '4.0.0_best_int', file),
+      join(tesseractData, file),
+    ]);
+  }
+}
+
+const editorFonts = selfHostedPath('VITE_EMBEDPDF_FONTS_URL');
+if (editorFonts) {
+  if (process.env.VITE_EMBEDPDF_FONTS_URL.trim().endsWith('/')) {
+    throw new Error(
+      'VITE_EMBEDPDF_FONTS_URL must not end in /: the editor adds one before each font'
+    );
+  }
+  const source = readSource('src/js/config/editor-fonts.ts');
+  const scope = source.match(
+    /'https:\/\/cdn\.jsdelivr\.net\/npm\/(@[\w.-]+)'/
+  )?.[1];
+  const fonts = [...source.matchAll(/'(fonts-[\w.-]+@[\w.-]+\/[^']+)'/g)].map(
+    ([, font]) => font
+  );
+  if (!scope || fonts.length === 0) {
+    throw new Error('No jsDelivr fonts found in editor-fonts.ts');
+  }
+  for (const font of fonts) {
+    const { spec, installed } = splitNpmPath(`${scope}/${font}`);
+    packages.add(spec);
+    copies.push([installed, join(editorFonts, font)]);
+  }
+}
+
+const ocrFonts = selfHostedPath('VITE_OCR_FONT_BASE_URL');
+if (ocrFonts) {
+  const urls = readSource('src/js/config/font-mappings.ts').matchAll(
+    /'(https:\/\/[^']+)'/g
+  );
+  for (const url of new Set([...urls].map(([, url]) => url))) {
+    downloads.push([url, join(ocrFonts, url.split('/').pop())]);
+  }
+}
+
+if (packages.size > 0) {
+  const specs = [...packages];
+  const invalid = specs.find(
+    (spec) => !/^(?:@[\w.-]+\/)?[\w.-]+(?:@[\w.-]+)?$/.test(spec)
+  );
+  if (invalid) {
+    throw new Error(`Not a package name: ${invalid}`);
+  }
+  // A package.json of its own keeps npm from installing into the project.
+  mkdirSync(cacheDir, { recursive: true });
+  writeFileSync(join(cacheDir, 'package.json'), '{ "private": true }\n');
+  const args = [
+    'install',
+    '--prefix',
+    cacheDir,
+    '--no-save',
+    '--no-package-lock',
+    '--ignore-scripts',
+    '--no-audit',
+    '--no-fund',
+    ...specs,
+  ];
+  // npm is a .cmd script on Windows, which only runs through a shell.
+  const result =
+    process.platform === 'win32'
+      ? spawnSync(`npm ${args.map((arg) => `"${arg}"`).join(' ')}`, {
+          stdio: 'inherit',
+          shell: true,
+        })
+      : spawnSync('npm', args, { stdio: 'inherit' });
+  if (result.status !== 0) {
+    throw new Error('Could not install the self-hosted assets');
+  }
+}
+
+for (const [from, to] of copies) {
+  if (!existsSync(from)) {
+    throw new Error(`Missing self-hosted asset: ${relative(repoRoot, from)}`);
+  }
+  cpSync(from, to, { recursive: true });
+}
+
+await Promise.all(
+  downloads.map(async ([url, to]) => {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Could not download ${url}: HTTP ${response.status}`);
+    }
+    mkdirSync(dirname(to), { recursive: true });
+    writeFileSync(to, Buffer.from(await response.arrayBuffer()));
+  })
+);
 
 const securityHeaders = readFileSync(
   join(repoRoot, 'security-headers.conf'),
@@ -209,5 +401,5 @@ if (tooLarge.length > 0 || files.length > MAX_FILES) {
 
 const largest = files.reduce((a, b) => (b.size > a.size ? b : a));
 console.log(
-  `Cloudflare Pages: ${files.length} files (${excludedFiles} excluded pages removed, ${precompressedRemoved} precompressed copies removed, ${rebranded} pages rebranded), largest ${relative(dist, largest.path)} (${(largest.size / 1048576).toFixed(1)} MiB), _headers written`
+  `Cloudflare Pages: ${files.length} files (${excludedFiles} excluded pages removed, ${copies.length + downloads.length} assets self-hosted, ${precompressedRemoved} precompressed copies removed, ${rebranded} pages rebranded), largest ${relative(dist, largest.path)} (${(largest.size / 1048576).toFixed(1)} MiB), _headers written`
 );

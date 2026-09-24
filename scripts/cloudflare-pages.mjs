@@ -16,6 +16,12 @@
 //   reaches the page at runtime, so the generated HTML still says BentoPDF.
 //   Author and structured data keep crediting BentoPDF. SITE_DESCRIPTION, if
 //   set, replaces the English description of the home pages.
+// - Removes the pages of the tools turned off with DISABLE_TOOLS, which the
+//   build still generates and which would fail without their engine, and the
+//   pages listed in EXCLUDE_PAGES, such as bentopdf.com's own about, contact
+//   and legal pages. Each goes in every language, a directory name such as
+//   "blog" goes as a whole, and all are dropped from the sitemap.
+// - Points robots.txt at this site's sitemap when SITE_URL is set.
 // - Fails early if a file is still too large or there are too many files,
 //   rather than at deploy time.
 import {
@@ -35,6 +41,65 @@ const MAX_FILE_BYTES = 25 * 1024 * 1024;
 const MAX_FILES = 20000;
 
 rmSync(join(dist, 'libreoffice-wasm'), { recursive: true, force: true });
+
+const listFrom = (value) =>
+  (value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+const excludedPages = [
+  ...listFrom(process.env.DISABLE_TOOLS),
+  ...listFrom(process.env.EXCLUDE_PAGES),
+];
+const invalidPage = excludedPages.find((page) => !/^[a-z0-9-]+$/i.test(page));
+if (invalidPage) {
+  throw new Error(`Not a page name: ${invalidPage}`);
+}
+
+const languages = readdirSync(join(repoRoot, 'public', 'locales'));
+let excludedFiles = 0;
+for (const page of excludedPages) {
+  for (const language of ['', ...languages]) {
+    for (const target of [
+      join(dist, language, `${page}.html`),
+      join(dist, language, page),
+    ]) {
+      if (existsSync(target)) {
+        rmSync(target, { recursive: true, force: true });
+        excludedFiles++;
+      }
+    }
+  }
+}
+
+const sitemapPath = join(dist, 'sitemap.xml');
+if (excludedPages.length > 0 && existsSync(sitemapPath)) {
+  const excluded = new Set(excludedPages);
+  const sitemap = readFileSync(sitemapPath, 'utf8').replace(
+    /\s*<url>[\s\S]*?<\/url>/g,
+    (entry) => {
+      const location = entry.match(/<loc>([^<]*)<\/loc>/)?.[1];
+      const segments = location
+        ? new URL(location).pathname.split('/').filter(Boolean)
+        : [];
+      const page = languages.includes(segments[0]) ? segments[1] : segments[0];
+      return excluded.has(page) ? '' : entry;
+    }
+  );
+  writeFileSync(sitemapPath, sitemap);
+}
+
+const siteUrl = process.env.SITE_URL?.trim().replace(/\/+$/, '');
+const robotsPath = join(dist, 'robots.txt');
+if (siteUrl && existsSync(robotsPath)) {
+  writeFileSync(
+    robotsPath,
+    readFileSync(robotsPath, 'utf8').replace(
+      /^Sitemap: .*$/m,
+      `Sitemap: ${siteUrl}/sitemap.xml`
+    )
+  );
+}
 
 const securityHeaders = readFileSync(
   join(repoRoot, 'security-headers.conf'),
@@ -144,5 +209,5 @@ if (tooLarge.length > 0 || files.length > MAX_FILES) {
 
 const largest = files.reduce((a, b) => (b.size > a.size ? b : a));
 console.log(
-  `Cloudflare Pages: ${files.length} files (${precompressedRemoved} precompressed copies removed, ${rebranded} pages rebranded), largest ${relative(dist, largest.path)} (${(largest.size / 1048576).toFixed(1)} MiB), _headers written`
+  `Cloudflare Pages: ${files.length} files (${excludedFiles} excluded pages removed, ${precompressedRemoved} precompressed copies removed, ${rebranded} pages rebranded), largest ${relative(dist, largest.path)} (${(largest.size / 1048576).toFixed(1)} MiB), _headers written`
 );

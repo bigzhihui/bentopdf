@@ -13,6 +13,15 @@ import fs from 'fs';
 import { constants as zlibConstants } from 'zlib';
 import { createHash } from 'crypto';
 
+// A value pasted into a hosting dashboard can keep its line break, which would
+// then end up inside the URLs baked into the bundle. Vite reads the VITE_
+// variables only after this file runs, so they are trimmed here.
+for (const [key, value] of Object.entries(process.env)) {
+  if (key.startsWith('VITE_') && value !== undefined) {
+    process.env[key] = value.trim();
+  }
+}
+
 function engineVersion(): string {
   try {
     const dir = resolve(__dirname, 'node_modules/bentopdf-pdfium');

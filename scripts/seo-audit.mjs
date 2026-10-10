@@ -384,10 +384,13 @@ function main() {
     fail('audit', 'no HTML files found in dist/');
   }
 
+  // Excluded pages still exist before deployment preparation removes them.
+  // Check links against actual files, independently of the pages being audited.
   const knownSlugs = new Set(
-    files
-      .filter((f) => !f.rel.includes('/'))
-      .map((f) => f.rel.replace(/\.html$/, ''))
+    fs
+      .readdirSync(DIST_DIR, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith('.html'))
+      .map((entry) => entry.name.replace(/\.html$/, ''))
   );
   for (const file of files) auditHtml(file, knownSlugs);
   auditSitemap();

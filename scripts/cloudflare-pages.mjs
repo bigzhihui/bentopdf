@@ -247,7 +247,13 @@ if (ocrFonts) {
     /'(https:\/\/[^']+)'/g
   );
   for (const url of new Set([...urls].map(([, url]) => url))) {
-    downloads.push([url, join(ocrFonts, url.split('/').pop())]);
+    // Fetch the same pinned GitHub font through jsDelivr; githack may be
+    // unreachable from the build machine even when the final site hosts it.
+    const downloadUrl = url.replace(
+      /^https:\/\/rawcdn\.githack\.com\/([^/]+)\/([^/]+)\/([^/]+)\//,
+      'https://cdn.jsdelivr.net/gh/$1/$2@$3/'
+    );
+    downloads.push([downloadUrl, join(ocrFonts, url.split('/').pop())]);
   }
 }
 
@@ -293,16 +299,39 @@ for (const [from, to] of copies) {
   cpSync(from, to, { recursive: true });
 }
 
-await Promise.all(
-  downloads.map(async ([url, to]) => {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Could not download ${url}: HTTP ${response.status}`);
+async function downloadAsset(url, to) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(30000),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const bytes = Buffer.from(await response.arrayBuffer());
+      mkdirSync(dirname(to), { recursive: true });
+      writeFileSync(to, bytes);
+      return;
+    } catch (cause) {
+      if (attempt === 3) {
+        throw new Error(`Could not download ${url} after ${attempt} attempts`, {
+          cause,
+        });
+      }
+      console.warn(`Retrying ${url} after download attempt ${attempt} failed`);
+      await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
     }
-    mkdirSync(dirname(to), { recursive: true });
-    writeFileSync(to, Buffer.from(await response.arrayBuffer()));
-  })
-);
+  }
+}
+
+// Bound concurrent TLS connections and large font buffers on build machines.
+for (let offset = 0; offset < downloads.length; offset += 4) {
+  await Promise.all(
+    downloads
+      .slice(offset, offset + 4)
+      .map(([url, to]) => downloadAsset(url, to))
+  );
+}
 
 // Cloudflare Web Analytics, when it is on for the project or the zone, puts a
 // beacon into each page, which loads its script from and reports to

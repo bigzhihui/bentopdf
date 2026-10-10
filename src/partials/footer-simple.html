@@ -14,15 +14,48 @@
           >
         </div>
         <p id="footer-copyright" class="text-gray-400 text-sm">
-          {{#if footerText}}{{footerText}}{{else}}&copy; 2026 BentoPDF. All
-          rights reserved.{{/if}}
+          {{#if footerText}}{{footerText}}{{else}}{{#if brandName}}<span
+            data-i18n="afeiiiFooter.attribution"
+            >Based on BentoPDF (AGPL-3.0).</span
+          >
+          &middot;
+          <a
+            class="hover:text-white underline"
+            href="https://github.com/bigzhihui/bentopdf"
+            data-i18n="afeiiiFooter.source"
+            >Source code</a
+          >
+          {{else}}&copy; 2026 BentoPDF. All rights reserved.{{/if}}{{/if}}
         </p>
         <p class="text-gray-500 text-xs mt-2">
           <span data-i18n="footer.version">Version</span>
           <span id="app-version">{{appVersion}}</span>
         </p>
       </div>
-      <div id="simple-mode-lang-switcher" class="flex-shrink-0"></div>
     </div>
+    <nav
+      aria-label="Site information"
+      class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-gray-300"
+    >
+      <a class="hover:text-white" href="/about" data-i18n="footer.aboutUs"
+        >About</a
+      >
+      <a class="hover:text-white" href="/faq" data-i18n="footer.faqLink">FAQ</a>
+      <a
+        class="hover:text-white"
+        href="/privacy"
+        data-i18n="footer.privacyPolicy"
+        >Privacy</a
+      >
+      <a
+        class="hover:text-white"
+        href="/terms"
+        data-i18n="footer.termsAndConditions"
+        >Terms</a
+      >
+      <a class="hover:text-white" href="/contact" data-i18n="footer.contactUs"
+        >Contact</a
+      >
+    </nav>
   </div>
 </footer>

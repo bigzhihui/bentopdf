@@ -21,6 +21,13 @@ const SKIP_DIRS = new Set([
   'pdfjs-viewer',
   'pdfjs-annotation-viewer',
 ]);
+const AFEIII_PAGES = new Set(['about', 'contact', 'faq', 'privacy', 'terms']);
+const EXCLUDED_PAGES = new Set(
+  `${process.env.DISABLE_TOOLS || ''},${process.env.EXCLUDE_PAGES || ''}`
+    .split(',')
+    .map((page) => page.trim())
+    .filter((page) => page && !AFEIII_PAGES.has(page))
+);
 const SITEMAP_FORBIDDEN_PATTERNS = [/\/404(\b|\/)/, /index\.html(?:$|\?)/];
 const SITEMAP_MAX_URLS = 50000;
 
@@ -44,9 +51,17 @@ function listDistHtml() {
       const rel = path.posix.join(prefix, entry);
       const stat = fs.statSync(full);
       if (stat.isDirectory()) {
-        if (SKIP_DIRS.has(entry) || entry.startsWith('.')) continue;
+        if (
+          SKIP_DIRS.has(entry) ||
+          EXCLUDED_PAGES.has(entry) ||
+          entry.startsWith('.')
+        )
+          continue;
         walk(full, rel);
-      } else if (entry.endsWith('.html')) {
+      } else if (
+        entry.endsWith('.html') &&
+        !EXCLUDED_PAGES.has(entry.slice(0, -5))
+      ) {
         files.push({ full, rel });
       }
     }
@@ -99,6 +114,7 @@ function expectedCanonicalForFile(rel) {
     } else if (LOCALE_DIRS.has(dir)) {
       const translated =
         baseName === 'index' ||
+        (AFEIII_PAGES.has(baseName) && dir === 'zh') ||
         Boolean(toolsByLang[dir] && toolsByLang[dir][translationKey]);
       if (translated) segments.push(dir);
     }

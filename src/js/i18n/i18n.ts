@@ -69,13 +69,21 @@ export const getLanguageFromUrl = (): SupportedLanguage => {
   }
 
   const langMatch = path.match(
-    /^\/(en|ar|fr|es|de|zh|zh-TW|vi|tr|id|it|pt|nl|be|da|ko|sv|ru|ja|uk|sk)(?:\/|$)/
+    /^\/(en|ar|fr|es|de|zh|zh-TW|vi|tr|id|it|pt|nl|be|da|ko|sv|ru|ja|uk|sk|pl)(?:\/|$)/
   );
   if (
     langMatch &&
     supportedLanguages.includes(langMatch[1] as SupportedLanguage)
   ) {
     return langMatch[1] as SupportedLanguage;
+  }
+
+  if (
+    typeof document !== 'undefined' &&
+    document.documentElement.hasAttribute('data-afeiii-page')
+  ) {
+    const pageLang = document.documentElement.lang;
+    if (pageLang === 'en' || pageLang === 'zh') return pageLang;
   }
 
   const storedLang = getStoredItem('i18nextLng');
@@ -166,7 +174,7 @@ export const changeLanguage = (lang: SupportedLanguage): void => {
 
   let pagePathWithoutLang = relativePath;
   const langPrefixMatch = relativePath.match(
-    /^\/(en|ar|fr|es|de|zh|zh-TW|vi|tr|id|it|pt|nl|be|da|ko|sv|ru|ja|uk|sk)(\/.*)?$/
+    /^\/(en|ar|fr|es|de|zh|zh-TW|vi|tr|id|it|pt|nl|be|da|ko|sv|ru|ja|uk|sk|pl)(\/.*)?$/
   );
   if (langPrefixMatch) {
     pagePathWithoutLang = langPrefixMatch[2] || '/';
@@ -260,8 +268,23 @@ export const rewriteLinks = (): void => {
       return;
     }
 
+    const localPath =
+      basePath && href.startsWith(`${basePath}/`)
+        ? href.slice(basePath.length)
+        : href;
+    const informationPage = localPath
+      .replace(new RegExp(`^/?(${supportedLanguages.join('|')})/`), '/')
+      .match(/^\/?(about|contact|faq|privacy|terms)(?:\.html)?([?#].*)?$/);
+    if (informationPage) {
+      link.setAttribute(
+        'href',
+        `${basePath}${currentLang === 'zh' ? '/zh' : ''}/${informationPage[1]}${informationPage[2] || ''}`
+      );
+      return;
+    }
+
     const langPrefixRegex = new RegExp(
-      `^(${basePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})?/?(en|ar|fr|es|de|zh|zh-TW|vi|tr|id|it|pt|nl|be|da|ko|sv|ru|ja|uk|sk)(/|$)`
+      `^(${basePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})?/?(en|ar|fr|es|de|zh|zh-TW|vi|tr|id|it|pt|nl|be|da|ko|sv|ru|ja|uk|sk|pl)(/|$)`
     );
     if (langPrefixRegex.test(href)) {
       return;

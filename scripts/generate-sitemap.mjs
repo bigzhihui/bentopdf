@@ -13,6 +13,7 @@ const SITE_URL = (process.env.SITE_URL || 'https://www.bentopdf.com').replace(
   ''
 );
 const EXCLUDED_PAGES = new Set(['404', 'wasm-settings']);
+const AFEIII_PAGES = new Set(['about', 'contact', 'faq', 'privacy', 'terms']);
 
 const languages = fs.readdirSync(LOCALES_DIR).filter((file) => {
   return fs.statSync(path.join(LOCALES_DIR, file)).isDirectory();
@@ -31,6 +32,7 @@ for (const lang of languages) {
 }
 
 function alternateLangsFor(pageName) {
+  if (AFEIII_PAGES.has(pageName)) return ['en', 'zh'];
   if (pageName === 'index') return languages;
   const translationKey = toCamelCase(pageName);
   return languages.filter(

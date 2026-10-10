@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getFontAssetFileName } from '../js/config/font-mappings';
 import {
   fallbackFontLanguages,
+  getFontForLanguage,
   hasFallbackFonts,
   loadFallbackFonts,
   resolveFontUrl,
@@ -39,6 +40,17 @@ describe('font-loader', () => {
     it('needs no font for text the standard fonts can encode', () => {
       expect(fallbackFontLanguages('Plain café š € “quotes”').size).toBe(0);
       expect([...fallbackFontLanguages('Příliš ŠĐČĆŽ')]).toEqual(['eng']);
+    });
+
+    it('rejects an unavailable Chinese OCR font instead of returning a Latin substitute', async () => {
+      const fetchFont = vi.fn(async () => {
+        throw new Error('font download unavailable');
+      });
+      vi.stubGlobal('fetch', fetchFont);
+      await expect(
+        getFontForLanguage('chi_sim', { allowSubstitute: false })
+      ).rejects.toThrow('font download unavailable');
+      expect(fetchFont).toHaveBeenCalledTimes(1);
     });
 
     it('downloads a missing font once and reports success', async () => {

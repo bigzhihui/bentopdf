@@ -381,6 +381,49 @@
     "title": "PDF Tools",
     "subtitle": "Select a tool to get started"
   },
+  "afeiiiFooter": {
+    "attribution": "Based on BentoPDF (AGPL-3.0).",
+    "source": "Source code"
+  },
+  "afeiiiIntro": {
+    "tasks": "Choose a PDF tool by task: combine documents, reduce file size, extract pages, or recognize text in scans.",
+    "privacy": "Most file processing runs in your browser. Check each tool's notes before working with sensitive documents, and review the output before sharing it."
+  },
+  "afeiiiGuide": {
+    "merge": {
+      "title": "Choosing the right way to merge",
+      "use": "For a contract and its appendix, add the files in reading order. File Mode is quickest when you need every page; page ranges let you leave out covers or duplicates.",
+      "option": "Use Page Mode when pages from different files need to be interleaved. Rearrange the thumbnails until the final order matches the document you want to send.",
+      "check": "Open the downloaded PDF and check its page order, orientation and bookmarks before sharing it. Keep the originals until you have verified the result."
+    },
+    "compress": {
+      "title": "Reduce size without losing what matters",
+      "use": "Start with the balanced Condense setting for a report or form. Increase compression only if the file remains too large for its destination.",
+      "option": "Photon turns pages into images and can help with scanned or photo-heavy PDFs, but searchable text and links may be lost. Keep a copy of the original before trying it.",
+      "check": "Compression cannot guarantee an exact file size. Check small text, diagrams and image quality in the downloaded file, especially before submitting it to a portal."
+    },
+    "split": {
+      "title": "Pick the split method that fits the document",
+      "use": "Use page ranges to separate a known set of pages, thumbnails when you want to choose visually, or bookmark levels when the PDF already has a chapter outline.",
+      "option": "For a large stack of scans, splitting into groups of a fixed number of pages can be faster than selecting each page separately.",
+      "check": "Check the PDF page index rather than the printed page number on the document: cover pages and front matter often make them different. Open each output before deleting the original."
+    },
+    "ocr": {
+      "title": "Make a scan searchable",
+      "use": "Select the language actually used in the document. For a bilingual form, select both languages; the recognition data may need to download before the first run.",
+      "option": "The searchable PDF keeps the scanned appearance and adds a text layer. After downloading, search for a distinctive word and try copying a sentence to check the result.",
+      "check": "Blurred, skewed or low-resolution scans can produce incorrect text. Review names, numbers and dates against the original image before relying on them."
+    },
+    "pdfToWord": {
+      "title": "Turn a fixed page into an editable document",
+      "use": "Use PDF to Word when you need to edit text in a report or reuse part of a document. The result is a DOCX file, so you can continue editing in a compatible word processor.",
+      "option": "PDF records where content appears on a page; Word has to rebuild that structure. Tables, columns, unusual fonts and scanned pages may need manual repair. For an image-only scan, try OCR first.",
+      "check": "Compare headings, page breaks, tables and figures against the original PDF before sending the DOCX. Keep the source PDF as a reference."
+    }
+  },
+  "serviceWorker": {
+    "updateAvailable": "A new version of {{brand}} is available. Reload the page to use it now?"
+  },
   "disabledTool": {
     "title": "Tool Unavailable",
     "heading": "This tool has been disabled",

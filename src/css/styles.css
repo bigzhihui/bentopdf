@@ -1102,9 +1102,9 @@ button:not(:disabled):active,
   transition-duration: var(--dur-1);
 }
 
-/* Full-width rows: scaling them reads as the layout lurching, not a press. */
+/* Keep full-width rows stationary so presses near their edges still click. */
 .faq-question:active,
-.category-header:active,
+button.category-header:not(:disabled):active,
 summary:active,
 .lp .faq-question:active,
 .lp .category-header:active {

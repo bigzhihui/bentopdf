@@ -11,6 +11,7 @@ const SITE_URL = (process.env.SITE_URL || 'https://www.bentopdf.com').replace(
   /\/+$/,
   ''
 );
+const BRAND_NAME = process.env.VITE_BRAND_NAME || 'BentoPDF';
 
 const FALLBACK_SOCIAL_IMAGE = '/images/og-tools.png';
 
@@ -113,8 +114,10 @@ function injectWebsiteSchema(document) {
     {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      name: 'BentoPDF',
-      alternateName: ['Bento PDF', 'BentoPDF.com'],
+      name: BRAND_NAME,
+      ...(BRAND_NAME === 'BentoPDF'
+        ? { alternateName: ['Bento PDF', 'BentoPDF.com'] }
+        : {}),
       url: `${SITE_URL}/`,
     },
     null,

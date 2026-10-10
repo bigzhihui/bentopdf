@@ -205,4 +205,19 @@ describe('performOcr', () => {
     });
     expect(result.warnings[0].message).toContain('ocr failed');
   });
+
+  it('rejects a missing Chinese font instead of returning an unusable searchable PDF', async () => {
+    getFontForLanguage.mockRejectedValueOnce(new Error('font unavailable'));
+    await expect(
+      performOcr(new Uint8Array([1, 2, 3]), {
+        language: 'eng+chi_sim',
+        resolution: 2,
+        binarize: false,
+        whitelist: '',
+      })
+    ).rejects.toThrow('font required for searchable chi_sim text');
+    expect(mockWorker.recognize).not.toHaveBeenCalled();
+    expect(mockWorker.terminate).toHaveBeenCalledTimes(1);
+    expect(mockPdfDoc.save).not.toHaveBeenCalled();
+  });
 });

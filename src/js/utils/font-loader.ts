@@ -94,7 +94,10 @@ async function saveFontToDB(
   }
 }
 
-export async function getFontForLanguage(lang: string): Promise<ArrayBuffer> {
+export async function getFontForLanguage(
+  lang: string,
+  options: { allowSubstitute?: boolean } = {}
+): Promise<ArrayBuffer> {
   const fontFamily = languageToFontFamily[lang] || 'Noto Sans';
 
   if (fontCache.has(fontFamily)) {
@@ -122,6 +125,8 @@ export async function getFontForLanguage(lang: string): Promise<ArrayBuffer> {
 
     return fontBuffer;
   } catch (error) {
+    if (options.allowSubstitute === false) throw error;
+
     console.warn(
       `Failed to fetch font for ${lang} (${fontFamily}), falling back to default.`,
       error

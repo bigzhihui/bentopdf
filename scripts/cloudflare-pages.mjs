@@ -8,7 +8,8 @@
 //   in DISABLE_TOOLS so nothing links to them.
 // - Writes dist/_headers with the same security headers nginx sends in the
 //   Docker image (security-headers.conf, from generate-security-headers.mjs),
-//   so the CSP follows whatever WASM and OCR URLs the build was given.
+//   so the CSP follows whatever WASM and OCR URLs the build was given. The CSP
+//   also lets in the beacon of Cloudflare Web Analytics.
 // - Removes the .br and .gz copies made for nginx's precompressed serving:
 //   Cloudflare compresses responses itself and never serves them.
 // - With VITE_BRAND_NAME set, puts the brand into the static titles and site
@@ -18,8 +19,9 @@
 //   set, replaces the English description of the home pages.
 // - Removes the pages of the tools turned off with DISABLE_TOOLS, which the
 //   build still generates and which would fail without their engine, and the
-//   pages listed in EXCLUDE_PAGES, such as bentopdf.com's own about, contact
-//   and legal pages. Each goes in every language, a directory name such as
+//   pages listed in EXCLUDE_PAGES. The five afeiii information pages are kept
+//   even when an older deployment setting still lists their upstream versions.
+//   Each goes in every language, a directory name such as
 //   "blog" goes as a whole, and all are dropped from the sitemap.
 // - Points robots.txt at this site's sitemap when SITE_URL is set.
 // - Hosts the WASM engines, OCR data and fonts on this site when their URLs
@@ -53,10 +55,12 @@ const listFrom = (value) =>
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean);
+const ownedPages = new Set(['about', 'contact', 'faq', 'privacy', 'terms']);
+const disabledTools = new Set(listFrom(process.env.DISABLE_TOOLS));
 const excludedPages = [
-  ...listFrom(process.env.DISABLE_TOOLS),
+  ...disabledTools,
   ...listFrom(process.env.EXCLUDE_PAGES),
-];
+].filter((page) => !ownedPages.has(page));
 const invalidPage = excludedPages.find((page) => !/^[a-z0-9-]+$/i.test(page));
 if (invalidPage) {
   throw new Error(`Not a page name: ${invalidPage}`);
@@ -166,6 +170,13 @@ for (const [name, engine] of [
   const { spec, installed } = splitNpmPath(path);
   packages.add(spec);
   copies.push([installed, target]);
+  if (engine === 'ghostscript') {
+    const libraryRoot = target.replace(/[\\/]assets[\\/]?$/, '');
+    copies.push([join(dirname(installed), 'dist'), join(libraryRoot, 'dist')]);
+    if (libraryRoot === target) {
+      copies.push([installed, join(target, 'assets')]);
+    }
+  }
 }
 
 const tesseractWorker = selfHostedPath('VITE_TESSERACT_WORKER_URL');
@@ -293,6 +304,22 @@ await Promise.all(
   })
 );
 
+// Cloudflare Web Analytics, when it is on for the project or the zone, puts a
+// beacon into each page, which loads its script from and reports to
+// cloudflareinsights.com.
+const webAnalyticsSources = {
+  'script-src': 'https://static.cloudflareinsights.com',
+  'connect-src': 'https://cloudflareinsights.com',
+};
+const allowWebAnalytics = (policy) =>
+  policy
+    .split('; ')
+    .map((directive) => {
+      const source = webAnalyticsSources[directive.split(' ')[0]];
+      return source ? `${directive} ${source}` : directive;
+    })
+    .join('; ');
+
 const securityHeaders = readFileSync(
   join(repoRoot, 'security-headers.conf'),
   'utf8'
@@ -300,7 +327,10 @@ const securityHeaders = readFileSync(
   .split('\n')
   .map((line) => line.match(/^add_header\s+(\S+)\s+"(.*)"\s+always;$/))
   .filter(Boolean)
-  .map(([, name, value]) => `  ${name}: ${value}`);
+  .map(
+    ([, name, value]) =>
+      `  ${name}: ${name === 'Content-Security-Policy' ? allowWebAnalytics(value) : value}`
+  );
 
 if (securityHeaders.length === 0) {
   throw new Error('No headers found in security-headers.conf');
@@ -322,6 +352,15 @@ writeFileSync(
 
 const brand = process.env.VITE_BRAND_NAME?.trim();
 const siteDescription = process.env.SITE_DESCRIPTION?.trim();
+const brandMetaKeys = new Set([
+  'author',
+  'title',
+  'og:title',
+  'twitter:title',
+  'og:site_name',
+  'apple-mobile-web-app-title',
+  'application-name',
+]);
 const escapeAttribute = (value) =>
   value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 let rebranded = 0;
@@ -337,18 +376,51 @@ function rebrand(path) {
     page === 'index.html' || page === `${defaultLanguage}/index.html`;
   let html = original
     .replace(
-      /(<title>[^<]*?)(?: - | \| )BentoPDF<\/title>/,
-      (_, title) => `${title} - ${name}</title>`
+      /<title>([\s\S]*?)<\/title>/gi,
+      (_, title) => `<title>${title.replaceAll('BentoPDF', name)}</title>`
     )
     .replace('<title>PDF Tools</title>', () => `<title>${name}</title>`)
+    .replace(/<meta\b[^>]*>/gi, (tag) => {
+      const key = tag.match(/\b(?:name|property)="([^"]+)"/i)?.[1];
+      if (!key || !brandMetaKeys.has(key)) {
+        return tag;
+      }
+      return tag.replace(
+        /\bcontent="([^"]*)"/i,
+        (_, value) =>
+          `content="${value === 'PDF Tools' ? name : value.replaceAll('BentoPDF', name)}"`
+      );
+    })
     .replace(
-      /(<meta (?:name|property)="(?:title|og:title|twitter:title)" content="[^"]*?)(?: - | \| )BentoPDF"/g,
-      (_, start) => `${start} - ${name}"`
-    )
-    .replace(
-      /(<meta (?:name|property)="(?:title|og:title|twitter:title|og:site_name|apple-mobile-web-app-title|application-name)" content=")(?:BentoPDF|PDF Tools)"/g,
-      (_, start) => `${start}${name}"`
+      /<meta\s+name="twitter:(?:site|creator)"\s+content="@BentoPDF"\s*\/?>/gi,
+      ''
     );
+
+  html = html.replace(
+    /(<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/gi,
+    (tag, open, json, close) => {
+      let data;
+      try {
+        data = JSON.parse(json);
+      } catch {
+        return tag;
+      }
+      if (data?.['@type'] === 'Organization' && data.name === 'BentoPDF') {
+        return '';
+      }
+      if (
+        ['WebSite', 'SoftwareApplication', 'WebApplication'].includes(
+          data?.['@type']
+        ) &&
+        typeof data.name === 'string' &&
+        data.name.includes('BentoPDF')
+      ) {
+        data.name = data.name.replaceAll('BentoPDF', brand);
+        return `${open}${JSON.stringify(data, null, 2)}${close}`;
+      }
+      return tag;
+    }
+  );
 
   if (siteDescription && isHome) {
     html = html.replace(
@@ -360,6 +432,40 @@ function rebrand(path) {
   if (html !== original) {
     writeFileSync(path, html);
     rebranded++;
+  }
+}
+
+function removeDisabledToolLinks(path) {
+  if (disabledTools.size === 0) return;
+  const original = readFileSync(path, 'utf8');
+  const localized = relative(dist, path).replace(/\\/g, '/').startsWith('zh/');
+  const suffix = localized ? '（本站暂不可用）' : ' (unavailable on this site)';
+  const html = original.replace(
+    /<a\b[^>]*\bhref="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi,
+    (anchor, href, body) => {
+      if (/^(?:https?:|\/\/|mailto:|tel:|#)/i.test(href)) return anchor;
+      const slug = href
+        .split(/[?#]/, 1)[0]
+        .split('/')
+        .filter(Boolean)
+        .pop()
+        ?.replace(/\.html$/, '');
+      if (!slug || !disabledTools.has(slug)) return anchor;
+      if (/<h[1-6]\b/i.test(body)) return '';
+      return `<span class="text-gray-500">${body}${suffix}</span>`;
+    }
+  );
+  if (html !== original) writeFileSync(path, html);
+}
+
+if (brand) {
+  const manifestPath = join(dist, 'site.webmanifest');
+  if (existsSync(manifestPath)) {
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    manifest.name = brand;
+    manifest.short_name = brand;
+    if (siteDescription) manifest.description = siteDescription;
+    writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   }
 }
 
@@ -380,6 +486,7 @@ const walk = (dir) => {
       if (brand && path.endsWith('.html')) {
         rebrand(path);
       }
+      if (path.endsWith('.html')) removeDisabledToolLinks(path);
       files.push({ path, size: statSync(path).size });
     }
   }

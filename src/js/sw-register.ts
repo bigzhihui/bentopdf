@@ -6,6 +6,11 @@
  * conflicts with Vite's HMR (Hot Module Replacement)
  */
 
+import i18next from 'i18next';
+import { t } from './i18n/index.js';
+
+declare const __BRAND_NAME__: string;
+
 // Skip service worker registration in development mode
 const isDevelopment =
   window.location.hostname === 'localhost' ||
@@ -34,6 +39,17 @@ function collectTrustedWasmHosts(): string[] {
     }
   }
   return Array.from(hosts);
+}
+
+// The update prompt is translated, and on a slow network the page can still be
+// loading its translations when the worker finds an update.
+function whenTranslated(): Promise<void> {
+  if (i18next.isInitialized) {
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    i18next.on('initialized', () => resolve());
+  });
 }
 
 function sendTrustedHostsToSw(target: ServiceWorker | null | undefined) {
@@ -82,14 +98,13 @@ if (isDevelopment) {
               ) {
                 console.log('[SW] New version available! Reload to update.');
 
-                if (
-                  confirm(
-                    'A new version of BentoPDF is available. Reload to update?'
-                  )
-                ) {
-                  newWorker.postMessage({ type: 'SKIP_WAITING' });
-                  window.location.reload();
-                }
+                whenTranslated().then(() => {
+                  const brand = __BRAND_NAME__ || 'BentoPDF';
+                  if (confirm(t('serviceWorker.updateAvailable', { brand }))) {
+                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    window.location.reload();
+                  }
+                });
               }
             });
           }
@@ -103,9 +118,9 @@ if (isDevelopment) {
       sendTrustedHostsToSw(registration.active);
     });
 
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('[SW] New service worker activated, reloading...');
-      window.location.reload();
-    });
+    // The page does not reload when a new worker takes control. On a first
+    // visit that worker takes over a page already running the current code,
+    // and after an update the visitor chose above whether to reload. The
+    // worker skips waiting, so it takes control either way.
   });
 }

@@ -13,6 +13,7 @@ const SITE_URL = (process.env.SITE_URL || 'https://www.bentopdf.com').replace(
   ''
 );
 const BASE_PATH = (process.env.BASE_URL || '/').replace(/\/$/, '');
+const BRAND_NAME = process.env.VITE_BRAND_NAME || 'BentoPDF';
 
 const languages = fs.readdirSync(LOCALES_DIR).filter((file) => {
   return fs.statSync(path.join(LOCALES_DIR, file)).isDirectory();
@@ -26,6 +27,34 @@ const KEY_MAPPING = {
   index: 'home',
   404: 'notFound',
 };
+const AFEIII_PAGES = new Set(['about', 'contact', 'faq', 'privacy', 'terms']);
+
+function localizeAfeiiiPage(document, page, lang) {
+  if (!AFEIII_PAGES.has(page)) return;
+  const contentLang = lang === 'zh' ? 'zh' : 'en';
+  const sections = [...document.querySelectorAll('[data-afeiii-lang]')];
+  const selected = sections.find(
+    (section) => section.getAttribute('data-afeiii-lang') === contentLang
+  );
+  if (!selected) throw new Error(`Missing ${contentLang} content for ${page}`);
+  document.title = selected.getAttribute('data-afeiii-title') || document.title;
+  const description = selected.getAttribute('data-afeiii-description');
+  for (const selector of [
+    'meta[name="description"]',
+    'meta[property="og:description"]',
+  ]) {
+    const meta = document.querySelector(selector);
+    if (meta && description) meta.content = description;
+  }
+  const socialTitle = document.querySelector('meta[property="og:title"]');
+  if (socialTitle) socialTitle.content = document.title;
+  for (const section of sections) {
+    if (section !== selected) section.remove();
+  }
+  selected.removeAttribute('data-afeiii-lang');
+  selected.removeAttribute('data-afeiii-title');
+  selected.removeAttribute('data-afeiii-description');
+}
 
 function loadAllTranslations() {
   const translations = {};
@@ -105,6 +134,8 @@ function applyServerTranslations(document, langResources) {
 const ORGANIZATION_LD_MARKER = 'data-bentopdf-organization';
 
 function injectOrganizationLd(document) {
+  // A branded deployment is a site, not BentoPDF's organization.
+  if (BRAND_NAME !== 'BentoPDF') return;
   if (document.querySelector(`script[${ORGANIZATION_LD_MARKER}]`)) return;
   const existing = document.querySelectorAll(
     'script[type="application/ld+json"]'
@@ -138,8 +169,6 @@ function injectOrganizationLd(document) {
 }
 
 const BREADCRUMB_MARKER = 'data-bentopdf-breadcrumb';
-const BRAND_NAME = process.env.VITE_BRAND_NAME || 'BentoPDF';
-
 function buildLocalHomeHref(lang) {
   const langSegment = lang === 'en' ? '/' : `/${lang}/`;
   return `${BASE_PATH}${langSegment}`.replace(/\/+/g, '/');
@@ -230,6 +259,7 @@ function translationKeyForFile(filenameNoExt) {
 }
 
 function translatedLangsForFile(filenameNoExt, translations) {
+  if (AFEIII_PAGES.has(filenameNoExt)) return ['en', 'zh'];
   const translationKey = translationKeyForFile(filenameNoExt);
   return languages.filter(
     (l) =>
@@ -257,6 +287,8 @@ function processFileForLanguage(
 
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+  localizeAfeiiiPage(document, filenameNoExt, lang);
 
   applyServerTranslations(document, translations[lang]);
 
@@ -362,6 +394,21 @@ function processFileForLanguage(
 
     if (href === '/blog' || href.startsWith('/blog/')) return;
 
+    const localPath =
+      BASE_PATH && href.startsWith(`${BASE_PATH}/`)
+        ? href.slice(BASE_PATH.length)
+        : href;
+    const informationPage = localPath
+      .replace(new RegExp(`^/?(${languages.join('|')})/`), '/')
+      .match(/^\/?(about|contact|faq|privacy|terms)(?:\.html)?([?#].*)?$/);
+    if (informationPage) {
+      link.setAttribute(
+        'href',
+        `${BASE_PATH}${lang === 'zh' ? '/zh' : ''}/${informationPage[1]}${informationPage[2] || ''}`
+      );
+      return;
+    }
+
     const langPrefixRegex = new RegExp(
       `^(${BASE_PATH})?/(${languages.join('|')})(/|$)`
     );
@@ -391,6 +438,8 @@ function updateEnglishFile(filePath, originalContent, translatedLangs) {
   const filenameNoExt = path.basename(filePath, '.html');
   const dom = new JSDOM(originalContent);
   const document = dom.window.document;
+
+  localizeAfeiiiPage(document, filenameNoExt, 'en');
 
   document
     .querySelectorAll('link[rel="alternate"][hreflang]')

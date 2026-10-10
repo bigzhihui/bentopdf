@@ -1,322 +1,157 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-afeiii-page>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Primary Meta Tags -->
-    <title>FAQ - Frequently Asked Questions | BentoPDF</title>
+    <title>PDF Tools FAQ - Thirteen Months PDF Tools</title>
     <meta
       name="description"
-      content="Find answers to common questions about BentoPDF. Learn about privacy, features, file limits, and how our browser-based PDF tools work."
+      content="Answers about PDF conversion, file processing, OCR, browser limits and support at pdf.afeiii.com."
     />
-    <meta name="author" content="BentoPDF" />
     <meta name="robots" content="index, follow" />
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://www.bentopdf.com/faq" />
-
-    <!-- Open Graph -->
+    <link rel="canonical" href="https://pdf.afeiii.com/faq" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.bentopdf.com/faq" />
+    <meta property="og:url" content="https://pdf.afeiii.com/faq" />
     <meta
       property="og:title"
-      content="FAQ - Frequently Asked Questions | BentoPDF"
+      content="PDF Tools FAQ - Thirteen Months PDF Tools"
     />
-    <meta
-      property="og:description"
-      content="Find answers to common questions about BentoPDF. Learn about privacy, features, file limits, and how our browser-based PDF tools work."
-    />
-    <meta
-      property="og:image"
-      content="https://www.bentopdf.com/images/og-faq.png"
-    />
-    <meta property="og:site_name" content="BentoPDF" />
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="FAQ - Frequently Asked Questions | BentoPDF"
-    />
-    <meta
-      name="twitter:description"
-      content="Find answers to common questions about BentoPDF. Learn about privacy, features, file limits, and how our browser-based PDF tools work."
-    />
-    <meta
-      name="twitter:image"
-      content="https://www.bentopdf.com/images/twitter-faq.png"
-    />
-    <meta name="twitter:site" content="@BentoPDF" />
-
-    <link href="/src/css/styles.css" rel="stylesheet" />
-    <link href="/src/css/landing.css" rel="stylesheet" />
-
-    <!-- Web App Manifest -->
-    <link rel="manifest" href="/site.webmanifest" />
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="192x192"
-      href="/images/favicon-192x192.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="512x512"
-      href="/images/favicon-512x512.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/images/apple-touch-icon.png"
-    />
+    <meta property="og:site_name" content="Thirteen Months PDF Tools" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link href="/src/css/styles.css" rel="stylesheet" />
   </head>
-
-  <body class="lp antialiased bg-gray-900 text-gray-300">
-    {{> navbar }}
-
-    <div
-      id="app"
-      class="min-h-screen container mx-auto px-4 pt-4 md:px-8 md:pt-8"
+  <body class="bg-gray-900 text-gray-100">
+    {{> navbar-simple }}
+    <main
+      data-afeiii-lang="en"
+      data-afeiii-title="PDF Tools FAQ - Thirteen Months PDF Tools"
+      data-afeiii-description="Answers about PDF conversion, file processing, OCR, browser limits and support at pdf.afeiii.com."
+      class="container mx-auto max-w-3xl px-4 py-12 sm:py-16 space-y-8"
     >
-      <section id="faq-hero" class="text-center py-16 md:py-24">
-        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
-          Frequently Asked Questions
+      <header class="space-y-4">
+        <p class="text-indigo-300 font-semibold">FAQ</p>
+        <h1 class="text-3xl sm:text-4xl font-bold">
+          Frequently asked questions
         </h1>
-        <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
-          Have questions? We've got answers. Here are some of the most common
-          things people ask about BentoPDF.
+        <p class="text-gray-300">
+          Quick answers for common PDF tasks. Each tool page also explains its
+          own options.
+        </p>
+      </header>
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">Do I need an account?</h2>
+        <p class="text-gray-300 leading-7">
+          No. Open a tool, choose a file, process it and download the result.
+          The site does not provide accounts or online document storage.
         </p>
       </section>
-
-      <div class="faq-list">
-        <details class="faq-d">
-          <summary class="faq-d-q">
-            <h3 class="font-semibold text-white text-lg">
-              Are my files safe and private?
-            </h3>
-            <i data-lucide="plus" class="faq-d-icon"></i>
-          </summary>
-          <div class="faq-d-a">
-            <p>
-              <strong>Absolutely.</strong> This is the most important feature of
-              BentoPDF. All processing happens 100% locally in your web browser.
-              Your files are never uploaded to any server, which means we, or
-              anyone else, can never see them. Your privacy is guaranteed.
-            </p>
-          </div>
-        </details>
-
-        <details class="faq-d">
-          <summary class="faq-d-q">
-            <h3 class="font-semibold text-white text-lg">
-              Is BentoPDF really free? What's the catch?
-            </h3>
-            <i data-lucide="plus" class="faq-d-icon"></i>
-          </summary>
-          <div class="faq-d-a">
-            <p>
-              Yes, it's completely free, and there's no catch. There are no
-              hidden fees, no subscription plans, no usage limits, and no
-              premium-only features. We believe essential tools should be
-              accessible to everyone.
-            </p>
-          </div>
-        </details>
-
-        <details class="faq-d">
-          <summary class="faq-d-q">
-            <h3 class="font-semibold text-white text-lg">
-              Do I need an internet connection to use the tools?
-            </h3>
-            <i data-lucide="plus" class="faq-d-icon"></i>
-          </summary>
-          <div class="faq-d-a">
-            <p>
-              After you load the website for the first time, most tools will
-              work completely offline! Because all the processing libraries are
-              loaded into your browser, you can disconnect from the internet and
-              continue to merge, split, compress, and edit your PDFs securely.
-              Some niche tools that require external data (like Markdown to PDF
-              with web images) may need a connection.
-            </p>
-          </div>
-        </details>
-
-        <details class="faq-d">
-          <summary class="faq-d-q">
-            <h3 class="font-semibold text-white text-lg">
-              Are there any file size or usage limitations?
-            </h3>
-            <i data-lucide="plus" class="faq-d-icon"></i>
-          </summary>
-          <div class="faq-d-a">
-            <p>
-              No, we do not impose any artificial limits on file size, the
-              number of files, or how many times you can use a tool. The only
-              practical limitation is the processing power and memory of your
-              own computer, as very large or complex files may take longer to
-              process.
-            </p>
-          </div>
-        </details>
-
-        <details class="faq-d">
-          <summary class="faq-d-q">
-            <h3 class="font-semibold text-white text-lg">
-              Why did my PDF fail to process?
-            </h3>
-            <i data-lucide="plus" class="faq-d-icon"></i>
-          </summary>
-          <div class="faq-d-a">
-            <p>Failures are rare but can happen for a few reasons:</p>
-            <ul class="list-disc list-inside mt-2 space-y-1">
-              <li>
-                The PDF might be corrupted or not compliant with standard
-                specifications.
-              </li>
-              <li>
-                The file could be encrypted with a password you don't have.
-                Please use our Decrypt tool first.
-              </li>
-              <li>
-                The file might be a special "XFA" or dynamic form-based PDF,
-                which some of our tools cannot process.
-              </li>
-            </ul>
-          </div>
-        </details>
-
-        <details class="faq-d">
-          <summary class="faq-d-q">
-            <h3 class="font-semibold text-white text-lg">
-              Do you track my activity on BentoPDF?
-            </h3>
-            <i data-lucide="plus" class="faq-d-icon"></i>
-          </summary>
-          <div class="faq-d-a">
-            <p>
-              No. BentoPDF does not track you at all. We do not use cookies,
-              analytics, or any tracking scripts, not even on the live website
-              at bentopdf.com. We never know who you are or what you do with the
-              tools.
-            </p>
-          </div>
-        </details>
-
-        <details class="faq-d">
-          <summary class="faq-d-q">
-            <h3 class="font-semibold text-white text-lg">
-              What technology does BentoPDF use?
-            </h3>
-            <i data-lucide="plus" class="faq-d-icon"></i>
-          </summary>
-          <div class="faq-d-a">
-            <p>
-              BentoPDF is built on the power of modern web technologies. We
-              primarily use JavaScript libraries like
-              <strong>PDF-lib.js</strong> and <strong>PDFKit.js</strong> that
-              are compiled to run efficiently in your browser via WebAssembly.
-              This allows for powerful, server-like processing without your data
-              ever leaving your machine.
-            </p>
-          </div>
-        </details>
-      </div>
-
-      <section id="contact-section" class="lp-sec">
-        <div class="lp-frame">
-          <div class="lp-cta">
-            <h2 class="lp-h2">Still have questions?</h2>
-            <p>
-              If you can't find the answer you're looking for, feel free to
-              reach out. We're always happy to help.
-            </p>
-            <div class="lp-cta-actions">
-              <span class="lp-brackets">
-                <a href="contact.html" class="lp-btn lp-btn--primary">
-                  <span data-i18n="footer.contactUs">Contact Us</span>
-                  <i data-lucide="arrow-right"></i>
-                </a>
-              </span>
-            </div>
-          </div>
-        </div>
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">Does the site upload my PDF?</h2>
+        <p class="text-gray-300 leading-7">
+          The tools are designed for browser-side file processing. Some tools
+          download code, fonts or OCR data, and features that fetch a web
+          address or validate a signature can contact an external service. See
+          the
+          <a class="text-indigo-300 underline" href="/privacy"
+            >privacy information</a
+          >
+          for details.
+        </p>
       </section>
-    </div>
-
-    {{> footer }}
-
-    <script type="module" src="src/js/utils/lucide-init.ts"></script>
-    <script type="module" src="src/js/mobileMenu.ts"></script>
-    <script type="module" src="src/js/main.ts"></script>
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Are my files safe and private?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Absolutely. This is the most important feature of BentoPDF. All processing happens 100% locally in your web browser. Your files are never uploaded to any server, which means we, or anyone else, can never see them. Your privacy is guaranteed."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is BentoPDF really free? What's the catch?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes, it's completely free, and there's no catch. There are no hidden fees, no subscription plans, no usage limits, and no premium-only features. We believe essential tools should be accessible to everyone."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Do I need an internet connection to use the tools?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "After you load the website for the first time, most tools will work completely offline! Because all the processing libraries are loaded into your browser, you can disconnect from the internet and continue to merge, split, compress, and edit your PDFs securely. Some niche tools that require external data (like Markdown to PDF with web images) may need a connection."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Are there any file size or usage limitations?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No, we do not impose any artificial limits on file size, the number of files, or how many times you can use a tool. The only practical limitation is the processing power and memory of your own computer, as very large or complex files may take longer to process."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Why did my PDF fail to process?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Failures are rare but can happen for a few reasons: The PDF might be corrupted or not compliant with standard specifications. The file could be encrypted with a password you don't have. Please use our Decrypt tool first. The file might be a special XFA or dynamic form-based PDF, which some of our tools cannot process."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Do you track my activity on BentoPDF?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. BentoPDF does not track you at all. We do not use cookies, analytics, or any tracking scripts, not even on the live website at bentopdf.com. We never know who you are or what you do with the tools."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What technology does BentoPDF use?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "BentoPDF is built on the power of modern web technologies. We primarily use JavaScript libraries like PDF-lib.js and PDFKit.js that are compiled to run efficiently in your browser via WebAssembly. This allows for powerful, server-like processing without your data ever leaving your machine."
-            }
-          }
-        ]
-      }
-    </script>
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">Why can a large file fail?</h2>
+        <p class="text-gray-300 leading-7">
+          PDF rendering and conversion use your device's memory and processing
+          power. Close unused tabs, try a smaller file or desktop browser, and
+          save the original before retrying.
+        </p>
+      </section>
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">
+          Will a converted Word file look identical?
+        </h2>
+        <p class="text-gray-300 leading-7">
+          PDF stores the appearance of pages, while Word is editable. Complex
+          layouts, unusual fonts and scanned pages can convert imperfectly.
+          Review the DOCX before sharing it. For scanned pages, try
+          <a class="text-indigo-300 underline" href="/ocr-pdf">OCR PDF</a>
+          first.
+        </p>
+      </section>
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">How do I report a problem?</h2>
+        <p class="text-gray-300 leading-7">
+          Use the
+          <a class="text-indigo-300 underline" href="/contact">contact page</a>
+          or email
+          <a class="text-indigo-300 underline" href="mailto:support@afeiii.com"
+            >support@afeiii.com</a
+          >. Include the tool URL, browser and error message; avoid sending
+          confidential documents.
+        </p>
+      </section>
+    </main>
+    <main
+      data-afeiii-lang="zh"
+      data-afeiii-title="十三月 PDF 工具常见问题"
+      data-afeiii-description="了解 pdf.afeiii.com 的 PDF 转换、文件处理、OCR、浏览器限制与问题反馈。"
+      class="container mx-auto max-w-3xl px-4 py-12 sm:py-16 space-y-8"
+    >
+      <header class="space-y-4">
+        <p class="text-indigo-300 font-semibold">常见问题</p>
+        <h1 class="text-3xl sm:text-4xl font-bold">
+          使用 PDF 工具前常见的疑问
+        </h1>
+        <p class="text-gray-300">
+          这里回答共性问题。具体选项的说明也可以在各工具页面查看。
+        </p>
+      </header>
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">需要注册账号吗？</h2>
+        <p class="text-gray-300 leading-7">
+          不需要。打开工具、选择文件、完成处理后下载结果即可。本站不提供账号和在线文件托管。
+        </p>
+      </section>
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">文件会上传到本站吗？</h2>
+        <p class="text-gray-300 leading-7">
+          本站工具设计为在浏览器端处理文件。部分工具会下载处理代码、字体或 OCR
+          数据；获取网页地址、验证签名等功能可能联系外部服务。详情见<a
+            class="text-indigo-300 underline"
+            href="/privacy"
+            >隐私说明</a
+          >。
+        </p>
+      </section>
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">为什么大文件处理失败？</h2>
+        <p class="text-gray-300 leading-7">
+          PDF
+          渲染和转换会使用您设备的内存与处理能力。可关闭不用的标签页、改用较小文件或桌面浏览器；重试前请保存原件。
+        </p>
+      </section>
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">PDF 转 Word 后排版会完全一致吗？</h2>
+        <p class="text-gray-300 leading-7">
+          PDF 侧重固定页面外观，Word
+          侧重编辑。复杂排版、特殊字体和扫描件可能无法完美转换，请在分享前检查
+          DOCX。扫描件可先尝试
+          <a class="text-indigo-300 underline" href="/ocr-pdf">PDF 文字识别</a
+          >。
+        </p>
+      </section>
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">如何反馈问题？</h2>
+        <p class="text-gray-300 leading-7">
+          请访问<a class="text-indigo-300 underline" href="/contact">联系页面</a
+          >，或发送邮件至
+          <a class="text-indigo-300 underline" href="mailto:support@afeiii.com"
+            >support@afeiii.com</a
+          >。请附上工具地址、浏览器和错误信息，避免发送机密文件。
+        </p>
+      </section>
+    </main>
+    {{> footer-simple }}
+    <script type="module" src="/src/js/site-page.ts"></script>
   </body>
 </html>

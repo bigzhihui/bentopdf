@@ -5,8 +5,11 @@ import {
   changeLanguage,
   t,
 } from './i18n';
+import type { SupportedLanguage } from './i18n';
 
-export const createLanguageSwitcher = (): HTMLElement => {
+export const createLanguageSwitcher = (
+  availableLanguages: readonly SupportedLanguage[] = supportedLanguages
+): HTMLElement => {
   const currentLang = getLanguageFromUrl();
 
   const container = document.createElement('div');
@@ -83,7 +86,7 @@ export const createLanguageSwitcher = (): HTMLElement => {
   emptyState.textContent = emptyText;
 
   const options: HTMLButtonElement[] = [];
-  supportedLanguages.forEach((lang) => {
+  availableLanguages.forEach((lang) => {
     const option = document.createElement('button');
     option.type = 'button';
     option.className = `
@@ -163,12 +166,14 @@ export const createLanguageSwitcher = (): HTMLElement => {
   return container;
 };
 
-export const injectLanguageSwitcher = (): void => {
+export const injectLanguageSwitcher = (
+  availableLanguages: readonly SupportedLanguage[] = supportedLanguages
+): void => {
   const simpleModeContainer = document.getElementById(
     'simple-mode-language-switcher'
   );
   if (simpleModeContainer) {
-    const switcher = createLanguageSwitcher();
+    const switcher = createLanguageSwitcher(availableLanguages);
     simpleModeContainer.appendChild(switcher);
     return;
   }
@@ -202,7 +207,7 @@ export const injectLanguageSwitcher = (): void => {
       );
 
       wrapper.appendChild(socialIconsContainer);
-      const switcher = createLanguageSwitcher();
+      const switcher = createLanguageSwitcher(availableLanguages);
 
       switcher.className = 'relative w-full';
 
@@ -228,7 +233,7 @@ export const injectLanguageSwitcher = (): void => {
     } else {
       const switcherContainer = document.createElement('div');
       switcherContainer.className = 'mt-4 w-full';
-      const switcher = createLanguageSwitcher();
+      const switcher = createLanguageSwitcher(availableLanguages);
       switcherContainer.appendChild(switcher);
       followUsColumn.appendChild(switcherContainer);
     }

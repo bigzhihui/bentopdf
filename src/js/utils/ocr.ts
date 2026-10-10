@@ -259,8 +259,8 @@ export async function performOcr(
     try {
       if (needsSeparateLatinFont) {
         const [scriptFontBytes, latinFontBytes] = await Promise.all([
-          getFontForLanguage(primaryLang),
-          getFontForLanguage('eng'),
+          getFontForLanguage(primaryLang, { allowSubstitute: false }),
+          getFontForLanguage('eng', { allowSubstitute: false }),
         ]);
         primaryFont = await newPdfDoc.embedFont(scriptFontBytes, {
           subset: !embedFullFonts,
@@ -269,13 +269,21 @@ export async function performOcr(
           subset: !embedFullFonts,
         });
       } else {
-        const fontBytes = await getFontForLanguage(primaryLang);
+        const fontBytes = await getFontForLanguage(primaryLang, {
+          allowSubstitute: false,
+        });
         primaryFont = await newPdfDoc.embedFont(fontBytes, {
           subset: !embedFullFonts,
         });
         latinFont = primaryFont;
       }
     } catch (e) {
+      if (primaryLang !== 'eng') {
+        throw new Error(
+          `Could not load the ${primaryFontFamily} font required for searchable ${primaryLang} text. Please check the font download and retry.`,
+          { cause: e }
+        );
+      }
       console.error('Font loading failed, falling back to Helvetica', e);
       primaryFont = await newPdfDoc.embedFont(StandardFonts.Helvetica);
       latinFont = primaryFont;

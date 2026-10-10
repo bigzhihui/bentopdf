@@ -239,8 +239,10 @@ const init = async () => {
     'Remove Restrictions': 'tools:removeRestrictions',
     'Repair PDF': 'tools:repairPdf',
     'Encrypt PDF': 'tools:encryptPdf',
+    'Protect PDF': 'tools:protectPdf',
     'Sanitize PDF': 'tools:sanitizePdf',
     'Decrypt PDF': 'tools:decryptPdf',
+    'Unlock PDF': 'tools:unlockPdf',
     'Flatten PDF': 'tools:flattenPdf',
     'Remove Metadata': 'tools:removeMetadata',
     'Change Permissions': 'tools:changePermissions',
@@ -336,10 +338,13 @@ const init = async () => {
       header.append(title, chevron);
 
       const toolsContainer = document.createElement('div');
+      toolsContainer.id = `category-tools-${categorySlug}`;
       toolsContainer.className =
         'category-tools grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6';
 
       const isCollapsed = collapsedCategories.includes(category.name);
+      header.setAttribute('aria-controls', toolsContainer.id);
+      header.setAttribute('aria-expanded', String(!isCollapsed));
       if (isCollapsed) {
         categoryGroup.classList.add('collapsed');
         toolsContainer.style.maxHeight = '0px';
@@ -355,6 +360,7 @@ const init = async () => {
 
       header.addEventListener('click', () => {
         const collapsed = categoryGroup.classList.toggle('collapsed');
+        header.setAttribute('aria-expanded', String(!collapsed));
         if (collapsed) {
           toolsContainer.style.maxHeight = toolsContainer.scrollHeight + 'px';
           toolsContainer.style.overflow = 'hidden';

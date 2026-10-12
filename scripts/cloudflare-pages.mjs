@@ -403,12 +403,22 @@ function rebrand(path) {
   const defaultLanguage = process.env.VITE_DEFAULT_LANGUAGE || 'en';
   const isHome =
     page === 'index.html' || page === `${defaultLanguage}/index.html`;
+  const homeLanguage = page.includes('/')
+    ? page.split('/')[0]
+    : defaultLanguage;
+  const simpleHomeTitle =
+    homeLanguage === 'zh'
+      ? `${name} - 免费在线 PDF 合并、拆分、压缩与转换工具`
+      : `${name} - Free Online PDF Merge, Split, Compress and Convert Tools`;
   let html = original
     .replace(
       /<title>([\s\S]*?)<\/title>/gi,
       (_, title) => `<title>${title.replaceAll('BentoPDF', name)}</title>`
     )
-    .replace('<title>PDF Tools</title>', () => `<title>${name}</title>`)
+    .replace(
+      '<title>PDF Tools</title>',
+      () => `<title>${simpleHomeTitle}</title>`
+    )
     .replace(/<meta\b[^>]*>/gi, (tag) => {
       const key = tag.match(/\b(?:name|property)="([^"]+)"/i)?.[1];
       if (!key || !brandMetaKeys.has(key)) {
@@ -417,7 +427,13 @@ function rebrand(path) {
       return tag.replace(
         /\bcontent="([^"]*)"/i,
         (_, value) =>
-          `content="${value === 'PDF Tools' ? name : value.replaceAll('BentoPDF', name)}"`
+          `content="${
+            value === 'PDF Tools'
+              ? ['title', 'og:title', 'twitter:title'].includes(key)
+                ? simpleHomeTitle
+                : name
+              : value.replaceAll('BentoPDF', name)
+          }"`
       );
     })
     .replace(

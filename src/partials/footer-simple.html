@@ -18,15 +18,18 @@
             data-i18n="afeiiiFooter.attribution"
             >Based on BentoPDF (AGPL-3.0).</span
           >
-          &middot;
+          {{else}}&copy; 2026 BentoPDF. All rights reserved.{{/if}}{{/if}}
+        </p>
+        {{#if brandName}}
+        <p class="text-gray-400 text-sm mt-1">
           <a
             class="hover:text-white underline"
             href="https://github.com/bigzhihui/bentopdf"
             data-i18n="afeiiiFooter.source"
             >Source code</a
           >
-          {{else}}&copy; 2026 BentoPDF. All rights reserved.{{/if}}{{/if}}
         </p>
+        {{/if}}
         <p class="text-gray-500 text-xs mt-2">
           <span data-i18n="footer.version">Version</span>
           <span id="app-version">{{appVersion}}</span>

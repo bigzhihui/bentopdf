@@ -1,0 +1,19 @@
+{
+  "SITE_URL": "https://pdf.afeiii.com",
+  "SITE_DESCRIPTION": "Free online PDF tools for merging, splitting, compression, conversion and OCR. Process files locally in your browser with Thirteen Month PDF Tools.",
+  "SIMPLE_MODE": "true",
+  "DISABLE_GITHUB_STARS": "true",
+  "VITE_BRAND_NAME": "十三月 PDF 工具",
+  "VITE_DEFAULT_LANGUAGE": "zh",
+  "DISABLE_TOOLS": "word-to-pdf,excel-to-pdf,powerpoint-to-pdf,odt-to-pdf,ods-to-pdf,odp-to-pdf,odg-to-pdf,rtf-to-pdf,pages-to-pdf,pub-to-pdf,vsd-to-pdf,wpd-to-pdf,wps-to-pdf",
+  "EXCLUDE_PAGES": "blog,licensing,hyper-compress,kura",
+  "VITE_WASM_PYMUPDF_URL": "https://pdf.afeiii.com/wasm/pymupdf/",
+  "VITE_WASM_GS_URL": "https://pdf.afeiii.com/wasm/gs/",
+  "VITE_WASM_CPDF_URL": "https://pdf.afeiii.com/wasm/cpdf/",
+  "VITE_TESSERACT_WORKER_URL": "https://pdf.afeiii.com/wasm/ocr/worker.min.js",
+  "VITE_TESSERACT_CORE_URL": "https://pdf.afeiii.com/wasm/ocr/core/",
+  "VITE_TESSERACT_LANG_URL": "https://pdf.afeiii.com/wasm/ocr/lang-data/",
+  "VITE_TESSERACT_AVAILABLE_LANGUAGES": "eng,chi_sim,chi_tra,jpn,kor",
+  "VITE_OCR_FONT_BASE_URL": "https://pdf.afeiii.com/wasm/ocr/fonts/",
+  "VITE_EMBEDPDF_FONTS_URL": "https://pdf.afeiii.com/wasm/embedpdf"
+}

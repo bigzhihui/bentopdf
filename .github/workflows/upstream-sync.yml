@@ -1,0 +1,56 @@
+name: 检查上游更新
+
+on:
+  schedule:
+    - cron: '23 2 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+
+jobs:
+  check:
+    if: github.repository == 'bigzhihui/bentopdf'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 只读检查上游提交和正式版
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          UPSTREAM_REPORT_ONLY: 'true'
+        run: node scripts/upstream-sync.mjs
+
+  propose:
+    needs: check
+    if: github.repository == 'bigzhihui/bentopdf' && vars.ENABLE_UPSTREAM_SYNC == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # Only git and the trusted default-branch script run with this token.
+      # Candidate code runs separately in the read-only validation workflow.
+      - name: 准备更新草稿 PR
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/upstream-sync.mjs

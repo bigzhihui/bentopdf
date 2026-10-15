@@ -300,27 +300,52 @@ for (const [from, to] of copies) {
 }
 
 async function downloadAsset(url, to) {
+  const candidates = [url];
+  const pinnedGithub = url.match(
+    /^https:\/\/cdn\.jsdelivr\.net\/gh\/([^/]+)\/([^/@]+)@([a-f0-9]{40})\/(.+)$/i
+  );
+  if (pinnedGithub) {
+    const [, owner, repo, commit, path] = pinnedGithub;
+    // Same immutable file and commit; this fallback only runs at build time.
+    candidates.push(
+      `https://raw.githubusercontent.com/${owner}/${repo}/${commit}/${path}`
+    );
+  }
+  let cause;
   for (let attempt = 1; attempt <= 3; attempt++) {
-    try {
-      const response = await fetch(url, {
-        signal: AbortSignal.timeout(30000),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-      const bytes = Buffer.from(await response.arrayBuffer());
-      mkdirSync(dirname(to), { recursive: true });
-      writeFileSync(to, bytes);
-      return;
-    } catch (cause) {
-      if (attempt === 3) {
-        throw new Error(`Could not download ${url} after ${attempt} attempts`, {
-          cause,
+    for (const candidate of candidates) {
+      try {
+        const response = await fetch(candidate, {
+          signal: AbortSignal.timeout(30000),
         });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const bytes = Buffer.from(await response.arrayBuffer());
+        if (bytes.length === 0) throw new Error('Empty asset response');
+        if (/\.(otf|ttf)$/i.test(to)) {
+          const signature = bytes.subarray(0, 4).toString('latin1');
+          if (
+            !['OTTO', 'ttcf', 'true', '\x00\x01\x00\x00'].includes(signature)
+          ) {
+            throw new Error(
+              'Downloaded font has an invalid OpenType signature'
+            );
+          }
+        }
+        mkdirSync(dirname(to), { recursive: true });
+        writeFileSync(to, bytes);
+        if (candidate !== url)
+          console.log(`Downloaded pinned asset from GitHub fallback: ${to}`);
+        return;
+      } catch (error) {
+        cause = error;
       }
-      console.warn(`Retrying ${url} after download attempt ${attempt} failed`);
-      await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
     }
+    if (attempt === 3)
+      throw new Error(`Could not download ${url} after ${attempt} attempts`, {
+        cause,
+      });
+    console.warn(`Retrying ${url} after download attempt ${attempt} failed`);
+    await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
   }
 }
 

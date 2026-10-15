@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-blog.mjs && node scripts/generate-static-tool-links.mjs && tsc && vite build && node scripts/enhance-seo-pages.mjs && NODE_OPTIONS='--max-old-space-size=3072' node scripts/generate-i18n-pages.mjs && node scripts/generate-sitemap.mjs && node scripts/generate-security-headers.mjs && node scripts/seo-audit.mjs",
+    "build": "node scripts/generate-blog.mjs && node scripts/generate-static-tool-links.mjs && tsc && vite build && node scripts/enhance-seo-pages.mjs && node --max-old-space-size=3072 scripts/generate-i18n-pages.mjs && node scripts/generate-sitemap.mjs && node scripts/generate-security-headers.mjs && node scripts/seo-audit.mjs",
     "seo-audit": "node scripts/seo-audit.mjs",
     "build:with-docs": "npm run build && npm run docs:build && node scripts/include-docs-in-dist.js",
     "build:gzip": "COMPRESSION_MODE=g npm run build",
@@ -39,7 +39,9 @@
     "security:codeql:quick": "codeql database analyze ./codeql-db --format=csv --output=codeql-results.csv --threads=0 codeql/javascript-queries:codeql-suites/javascript-security-extended.qls",
     "security:patterns": "node scripts/security-patterns-check.mjs",
     "security:audit": "npm audit --audit-level=high && npm run lint:security && npm run security:patterns",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build:pages": "node scripts/build-pages.mjs",
+    "test:upstream-sync": "node --test scripts/upstream-sync.test.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -165,5 +167,14 @@
     "lodash-es": "^4.18.1",
     "follow-redirects": "^1.15.11",
     "esbuild": "^0.25.0"
+  },
+  "description": "十三月 PDF 工具：基于 BentoPDF 的中文定制版，文件在浏览器本地处理",
+  "homepage": "https://pdf.afeiii.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bigzhihui/bentopdf.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bigzhihui/bentopdf/issues"
   }
 }

@@ -235,74 +235,7 @@
     </div>
 
     <!-- Simple mode footer -->
-    <footer
-      class="mt-16 border-t-2 border-gray-700 py-8"
-      data-simple-footer="true"
-    >
-      <div class="container mx-auto px-4">
-        <div class="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <div class="flex items-center mb-2">
-              <img
-                src="{{baseUrl}}{{#if brandLogo}}{{brandLogo}}{{else}}images/favicon.svg{{/if}}"
-                alt="{{#if brandName}}{{brandName}}{{else}}Bento PDF{{/if}} Logo"
-                class="h-8 w-8 mr-2"
-              />
-              <span class="text-white font-bold text-lg"
-                >{{#if brandName}}{{brandName}}{{else}}BentoPDF{{/if}}</span
-              >
-            </div>
-            <p class="text-gray-400 text-sm">
-              {{#if footerText}}{{footerText}}{{else}}{{#if brandName}}<span
-                data-i18n="afeiiiFooter.attribution"
-                >Based on BentoPDF (AGPL-3.0).</span
-              >
-              &middot;
-              <a
-                class="hover:text-white underline"
-                href="https://github.com/bigzhihui/bentopdf"
-                data-i18n="afeiiiFooter.source"
-                >Source code</a
-              >
-              {{else}}&copy; 2026 BentoPDF. All rights reserved.{{/if}}{{/if}}
-            </p>
-            <p class="text-gray-500 text-xs mt-2">
-              <span data-i18n="footer.version">Version</span>
-              <span id="app-version">{{appVersion}}</span>
-            </p>
-          </div>
-        </div>
-        <nav
-          aria-label="Site information"
-          class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-gray-300"
-        >
-          <a class="hover:text-white" href="/about" data-i18n="footer.aboutUs"
-            >About</a
-          >
-          <a class="hover:text-white" href="/faq" data-i18n="footer.faqLink"
-            >FAQ</a
-          >
-          <a
-            class="hover:text-white"
-            href="/privacy"
-            data-i18n="footer.privacyPolicy"
-            >Privacy</a
-          >
-          <a
-            class="hover:text-white"
-            href="/terms"
-            data-i18n="footer.termsAndConditions"
-            >Terms</a
-          >
-          <a
-            class="hover:text-white"
-            href="/contact"
-            data-i18n="footer.contactUs"
-            >Contact</a
-          >
-        </nav>
-      </div>
-    </footer>
+    {{> footer-simple }}
 
     <script type="module" src="src/js/utils/lucide-init.ts"></script>
     <script type="module" src="src/js/utils/simple-mode-footer.ts"></script>

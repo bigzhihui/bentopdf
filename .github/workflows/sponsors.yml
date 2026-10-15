@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
 jobs:
   update:
+    if: github.repository == 'alam00000/bentopdf'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

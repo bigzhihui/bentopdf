@@ -1,0 +1,41 @@
+name: 按规则自动合并 PDF 更新
+
+on:
+  workflow_run:
+    workflows: [Tests]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pdf-upstream-automerge
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    if: github.repository == 'bigzhihui/bentopdf' && vars.ENABLE_UPSTREAM_AUTOMERGE == 'true' && vars.ENABLE_PDF_ROLLBACK == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+      issues: write
+    steps:
+      # workflow_run can receive untrusted run metadata. Check out only the
+      # trusted default-branch SHA and never install or execute candidate code.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inspect the exact validated candidate and merge allowed updates
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ENABLE_UPSTREAM_AUTOMERGE: ${{ vars.ENABLE_UPSTREAM_AUTOMERGE }}
+          ENABLE_PDF_ROLLBACK: ${{ vars.ENABLE_PDF_ROLLBACK }}
+        run: node scripts/upstream-automerge.mjs

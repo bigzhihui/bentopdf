@@ -230,7 +230,7 @@ export async function proposeUpdate({
     '- [ ] 检查 WASM、字体、OCR、13 个禁用 Office 工具及安全头。',
     '- [ ] 使用脱敏 PDF 验证受影响操作和下载结果；检查 Cloudflare 预览（如有）。',
     '',
-    '这是待审草稿：自动化只更新专用分支，不自动合并或发布。候选代码在独立、只读权限的验证工作流执行。',
+    '候选代码在独立、只读权限的验证工作流执行。默认保留待审草稿；只有显式启用自动上线，并满足允许范围、精确验证和回退条件时，独立控制器才会合并。',
   ].join('\n');
   const pr = existing
     ? await api(`/repos/${repo}/pulls/${existing.number}`, 'PATCH', {

@@ -29,7 +29,7 @@
 //   which many networks in mainland China cannot reach.
 // - Fails early if a file is still too large or there are too many files,
 //   rather than at deploy time.
-import { spawnSync } from 'node:child_process';
+import { spawnSync, execFileSync } from 'node:child_process';
 import {
   cpSync,
   existsSync,
@@ -42,6 +42,7 @@ import {
 } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { requireSha } from './maintenance-policy.mjs';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(repoRoot, 'dist');
@@ -395,6 +396,7 @@ if (securityHeaders.length === 0) {
 const rules = [
   ['/*', securityHeaders],
   ['/sw.js', ['  Cache-Control: no-cache']],
+  ['/build-info.json', ['  Cache-Control: no-store']],
   ['/workers/*', ['  Cache-Control: no-cache']],
   ['/assets/*', ['  Cache-Control: public, max-age=31536000, immutable']],
 ];
@@ -538,6 +540,20 @@ if (brand) {
     writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   }
 }
+
+// Keep the identity marker in this shared preparation step so both the newer
+// build:pages entry point and legacy Cloudflare build commands generate it.
+const commit = requireSha(
+  process.env.CF_PAGES_COMMIT_SHA ||
+    execFileSync('git', ['rev-parse', 'HEAD'], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    }).trim()
+);
+writeFileSync(
+  join(dist, 'build-info.json'),
+  `${JSON.stringify({ format: 1, commit })}\n`
+);
 
 const files = [];
 let precompressedRemoved = 0;

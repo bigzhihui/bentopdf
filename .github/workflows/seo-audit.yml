@@ -37,3 +37,18 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Build Pages distribution and audit SEO
         run: npm run build:pages
+      - name: Install browser for real PDF verification
+        run: npx playwright install --with-deps chromium
+      - name: Verify generated site and actual PDF downloads
+        env:
+          PDF_SMOKE_EXPECTED_COMMIT: ${{ inputs.ref || github.sha }}
+          PDF_SMOKE_ARTIFACT_DIR: ${{ runner.temp }}/pdf-smoke
+        run: npm run test:smoke
+      - name: Retain small browser verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-smoke-${{ github.run_id }}
+          path: ${{ runner.temp }}/pdf-smoke
+          if-no-files-found: ignore
+          retention-days: 3

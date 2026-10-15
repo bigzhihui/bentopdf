@@ -19,7 +19,15 @@ function resolveWasmUrl() {
   }
   const resolve = import.meta.resolve;
   if (typeof resolve !== 'function') return null;
-  return new URL(resolve('bentopdf-pdfium/editcore.wasm')).pathname;
+  const url = new URL(resolve('bentopdf-pdfium/editcore.wasm'));
+  const path = decodeURIComponent(url.pathname);
+  // Emscripten expects a filesystem path in Node, not /C:/... on Windows.
+  if (typeof process !== 'undefined' && process.platform === 'win32') {
+    return url.hostname
+      ? `//${url.hostname}${path}`
+      : path.replace(/^\/(?=[a-z]:\/)/i, '');
+  }
+  return path;
 }
 
 const wasmUrl = resolveWasmUrl();

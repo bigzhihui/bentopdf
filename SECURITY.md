@@ -1,110 +1,13 @@
-# Security Configuration
+# 安全政策
 
-## Non-Root User Support
+## 报告范围
 
-BentoPDF now uses nginx-unprivileged for enhanced security. This follows the Principle of Least Privilege and is essential for production environments.
+本仓库维护十三月 PDF 工具（https://pdf.afeiii.com）。与本站部署、定制代码、文件处理或信息泄露有关的问题，请发邮件至 **support@afeiii.com**。
 
-### Security Benefits
+请提供受影响页面、复现步骤、影响描述和已脱敏的最小示例。不要在公开 Issue 中发布尚未处理的利用步骤、个人文件、账号凭据或令牌。本站不承诺固定修复期限或漏洞奖励。
 
-- **Reduced Attack Surface**: If compromised, attackers won't have root privileges
-- **Compliance**: Meets security standards like SOC 2, PCI DSS
-- **Kubernetes/OpenShift Compatibility**: Works with security policies that require non-root execution
-- **System Protection**: Prevents system-wide damage if the application is compromised
+## 上游与组件
 
-### Usage
+本项目基于 [BentoPDF](https://github.com/alam00000/bentopdf)。如果问题属于上游代码或第三方组件，会按适当范围跟进上游修复；也可以参考[上游安全说明](https://github.com/alam00000/bentopdf/blob/main/SECURITY.md)。
 
-#### Default Configuration (nginx-unprivileged)
-
-```bash
-docker build -t bentopdf .
-docker run -p 8080:8080 bentopdf
-```
-
-#### Simple Mode
-
-```bash
-# Build with simple mode enabled
-docker build --build-arg SIMPLE_MODE=true -t bentopdf-simple .
-
-# Run the container
-docker run -p 8080:8080 bentopdf-simple
-```
-
-#### Kubernetes Example
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: bentopdf
-spec:
-  template:
-    spec:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 2000
-        runAsGroup: 2000
-      containers:
-        - name: bentopdf
-          image: bentopdf:latest
-          ports:
-            - containerPort: 8080
-```
-
-#### Docker Compose Example
-
-```yaml
-version: '3.8'
-services:
-  bentopdf:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        SIMPLE_MODE: false
-    ports:
-      - '8080:8080'
-    security_opt:
-      - no-new-privileges:true
-```
-
-### Verification
-
-To verify the container is running as non-root:
-
-```bash
-# Check the user inside the container
-docker exec <container_id> whoami
-# Should output: nginx
-
-# Check the user ID
-docker exec <container_id> id
-# Should show UID/GID for nginx user (typically 101)
-```
-
-### Security Best Practices
-
-1. **Use nginx-unprivileged**: Built-in non-root user with minimal privileges
-2. **Regular Updates**: Keep the base image updated (currently using 1.29-alpine)
-3. **Port 8080**: Use high port numbers to avoid requiring root privileges
-4. **Security Scanning**: Regularly scan images for vulnerabilities
-5. **Network Policies**: Implement network segmentation
-
-### Troubleshooting
-
-If you encounter permission issues:
-
-1. **Check file ownership**: Ensure all application files are owned by the nginx user
-2. **Verify PID directory**: Ensure `/etc/nginx/tmp/` directory exists and is writable
-3. **Port binding**: Ensure port 8080 is available and not blocked by firewall
-
-### Migration from Root
-
-If migrating from a root-based setup:
-
-1. Update your Dockerfile to use nginx-unprivileged base image
-2. Change port mappings from 80 to 8080 in all configurations
-3. Update nginx.conf to use `/etc/nginx/tmp/nginx.pid` for PID file
-4. Rebuild your images with the new security settings
-5. Update your deployment configurations (Kubernetes, Docker Compose, etc.)
-6. Test thoroughly in a staging environment
+部署维护时优先评估安全更新，保留本地文件处理约定、查看器来源校验和安全响应头。构建配置不保存密钥；前端公开变量不能用于保管秘密。

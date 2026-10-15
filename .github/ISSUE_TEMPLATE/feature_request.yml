@@ -1,39 +1,21 @@
-name: 💡 Feature Request
-description: Suggest a new feature for BentoPDF
-title: "(Feature) "
-labels: ["enhancement", "needs triage"]
+name: 功能建议
+description: 建议改进十三月 PDF 工具
+title: '[建议] '
+labels: [enhancement, needs triage]
 body:
   - type: textarea
-    id: description
+    id: need
     attributes:
-      label: Feature Description
-      description: What functionality are you requesting?
-      placeholder: Describe the feature you'd like to see...
+      label: 使用场景和遇到的问题
     validations:
       required: true
-
   - type: textarea
-    id: use-case
+    id: proposal
     attributes:
-      label: Use Case
-      description: Why is this feature useful? What problem does it solve?
-      placeholder: Explain why you need this feature...
+      label: 希望增加或调整的功能
     validations:
       required: true
-
   - type: textarea
     id: examples
     attributes:
-      label: Examples
-      description: Any examples, mockups, or references to illustrate the feature?
-      placeholder: Links to similar features, screenshots, etc.
-    validations:
-      required: false
-
-  - type: textarea
-    id: additional
-    attributes:
-      label: Additional Context
-      description: Any other information about the feature request.
-    validations:
-      required: false
+      label: 参考或补充说明（可选）

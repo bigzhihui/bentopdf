@@ -1,0 +1,120 @@
+name: PDF 上线验收与回退
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Exact merged main commit to verify
+        required: true
+        type: string
+      previous_deployment:
+        description: Previous successful production deployment ID
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pdf-production-watch
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.repository == 'bigzhihui/bentopdf' && vars.ENABLE_UPSTREAM_AUTOMERGE == 'true' && vars.ENABLE_PDF_ROLLBACK == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      state: ${{ steps.deployment.outputs.state }}
+      deployment: ${{ steps.deployment.outputs.deployment }}
+      url: ${{ steps.deployment.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Wait for the exact production deployment
+        id: deployment
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ENABLE_UPSTREAM_AUTOMERGE: ${{ vars.ENABLE_UPSTREAM_AUTOMERGE }}
+          ENABLE_PDF_ROLLBACK: ${{ vars.ENABLE_PDF_ROLLBACK }}
+          UPDATE_COMMIT: ${{ inputs.commit }}
+          PREVIOUS_DEPLOYMENT: ${{ inputs.previous_deployment }}
+        run: node scripts/pages-watch.mjs prepare
+
+  smoke:
+    needs: prepare
+    if: needs.prepare.outputs.state == 'ready'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      error_kind: ${{ steps.immutable.outputs.error_kind || steps.production.outputs.error_kind }}
+    steps:
+      # Browser execution has read-only permissions and no Cloudflare secret.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - name: Verify the immutable deployment with synthetic PDFs
+        id: immutable
+        env:
+          PDF_SMOKE_BASE_URL: ${{ needs.prepare.outputs.url }}
+          PDF_SMOKE_EXPECTED_COMMIT: ${{ inputs.commit }}
+          PDF_SMOKE_ARTIFACT_DIR: ${{ runner.temp }}/pdf-watch/immutable
+        run: npm run test:smoke
+      - name: Verify the production domain serves the same build
+        id: production
+        env:
+          PDF_SMOKE_BASE_URL: https://pdf.afeiii.com
+          PDF_SMOKE_EXPECTED_COMMIT: ${{ inputs.commit }}
+          PDF_SMOKE_ARTIFACT_DIR: ${{ runner.temp }}/pdf-watch/production
+        run: npm run test:smoke
+      - name: Retain browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-production-check-${{ github.run_id }}
+          path: ${{ runner.temp }}/pdf-watch
+          if-no-files-found: ignore
+          retention-days: 3
+
+  finish:
+    needs: [prepare, smoke]
+    if: always() && github.repository == 'bigzhihui/bentopdf' && vars.ENABLE_UPSTREAM_AUTOMERGE == 'true' && vars.ENABLE_PDF_ROLLBACK == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirm health or pause and recover the failed deployment
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ENABLE_UPSTREAM_AUTOMERGE: ${{ vars.ENABLE_UPSTREAM_AUTOMERGE }}
+          ENABLE_PDF_ROLLBACK: ${{ vars.ENABLE_PDF_ROLLBACK }}
+          UPDATE_COMMIT: ${{ inputs.commit }}
+          PREVIOUS_DEPLOYMENT: ${{ inputs.previous_deployment }}
+          DEPLOYMENT_STATE: ${{ needs.prepare.outputs.state }}
+          DEPLOYMENT_ID: ${{ needs.prepare.outputs.deployment }}
+          SMOKE_RESULT: ${{ needs.smoke.result }}
+          SMOKE_ERROR_KIND: ${{ needs.smoke.outputs.error_kind }}
+        run: node scripts/pages-watch.mjs finish

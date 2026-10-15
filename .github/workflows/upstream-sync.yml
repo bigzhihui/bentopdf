@@ -54,3 +54,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/upstream-sync.mjs
+
+  notify:
+    needs: [check, propose]
+    if: failure() && github.repository == 'bigzhihui/bentopdf' && vars.ENABLE_UPSTREAM_AUTOMERGE == 'true' && vars.ENABLE_PDF_ROLLBACK == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Pause automatic merging and record the failed update
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          node --input-type=module -e
+          "import {apiClients,pauseAutomation} from './scripts/maintenance-api.mjs';
+          await pauseAutomation(apiClients().github, '上游检查或合并准备失败，请检查运行日志中的冲突文件或错误；生产版本未被本次检查修改。');"

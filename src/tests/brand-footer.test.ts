@@ -3,12 +3,26 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import Handlebars from 'handlebars';
 
-const render = Handlebars.compile(
-  readFileSync(resolve('src/partials/footer-simple.html'), 'utf8')
+const handlebars = Handlebars.create();
+const partial = readFileSync(
+  resolve('src/partials/footer-simple.html'),
+  'utf8'
 );
+handlebars.registerPartial('footer-simple', partial);
+handlebars.registerPartial('settings-modal', '');
+handlebars.registerPartial('warning-modal', '');
+const renderers = [
+  { name: 'tool footer', render: handlebars.compile(partial) },
+  {
+    name: 'simple-mode homepage',
+    render: handlebars.compile(
+      readFileSync(resolve('simple-index.html'), 'utf8')
+    ),
+  },
+];
 const source = 'https://github.com/bigzhihui/bentopdf';
 
-describe('branded footer source access', () => {
+describe.each(renderers)('$name source access', ({ render }) => {
   it.each([
     '',
     '基于开源项目 BentoPDF（AGPL-3.0），源码：github.com/bigzhihui/bentopdf',
@@ -33,7 +47,7 @@ describe('branded footer source access', () => {
       }),
       'text/html'
     );
-    expect(doc.querySelector('script')).toBeNull();
+    expect(doc.querySelector('footer script')).toBeNull();
     expect(doc.querySelectorAll(`a[href="${source}"]`)).toHaveLength(1);
   });
 

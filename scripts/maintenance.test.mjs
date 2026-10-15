@@ -272,6 +272,7 @@ function mergeScenario() {
     head_sha: fixture.base,
     head_repository: { full_name: REPOSITORY },
     path: '.github/workflows/tests.yml',
+    display_title: `PDF validation ${fixture.candidate}`,
   };
   const state = {
     pr,
@@ -414,6 +415,13 @@ for (const [name, change, expected] of [
       s.run.head_sha = oldSha;
     },
     'stale-validation-workflow',
+  ],
+  [
+    'a manual validation for another candidate',
+    (s) => {
+      s.run.display_title = `PDF validation ${oldSha}`;
+    },
+    'unrelated-validation',
   ],
   [
     'a human review',

@@ -67,6 +67,8 @@ export async function assessAndMerge({
   )
     return { result: 'human-review' };
   const candidate = requireSha(pr.head.sha);
+  if (run.display_title !== `PDF validation ${candidate}`)
+    return { result: 'unrelated-validation' };
   const base = requireSha(
     (await github(`/repos/${REPOSITORY}/git/ref/heads/main`)).object.sha
   );

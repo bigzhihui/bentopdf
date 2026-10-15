@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   scan-image:
+    if: github.repository == 'alam00000/bentopdf'
     runs-on: ubuntu-latest
     strategy:
       matrix:

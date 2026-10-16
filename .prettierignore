@@ -5,3 +5,6 @@ blog/posts/
 
 public/pdfjs-viewer/
 public/pdfjs-annotation-viewer/
+
+# Preserve downloaded ownership verification responses byte for byte
+site-verification/

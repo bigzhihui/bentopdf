@@ -563,6 +563,22 @@ const walk = (dir) => {
 };
 walk(dist);
 
+// Verification responses must bypass HTML rewriting and localization.
+const verificationDir = join(repoRoot, 'site-verification');
+if (existsSync(verificationDir)) {
+  for (const entry of readdirSync(verificationDir, { withFileTypes: true })) {
+    if (
+      !entry.isFile() ||
+      !/^baidu_verify_(?:codeva-)?[a-zA-Z0-9]+\.html$/.test(entry.name)
+    ) {
+      throw new Error(`Unexpected site verification entry: ${entry.name}`);
+    }
+    const target = join(dist, entry.name);
+    cpSync(join(verificationDir, entry.name), target);
+    files.push({ path: target, size: statSync(target).size });
+  }
+}
+
 const tooLarge = files.filter((file) => file.size > MAX_FILE_BYTES);
 if (tooLarge.length > 0 || files.length > MAX_FILES) {
   for (const file of tooLarge) {

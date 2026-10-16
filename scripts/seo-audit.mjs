@@ -6,6 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const DIST_DIR = path.resolve(__dirname, '../dist');
+const VERIFICATION_DIR = path.resolve(__dirname, '../site-verification');
 const LOCALES_DIR = path.resolve(__dirname, '../public/locales');
 const SITE_URL = (process.env.SITE_URL || 'https://www.bentopdf.com').replace(
   /\/+$/,
@@ -62,6 +63,22 @@ function listDistHtml() {
         entry.endsWith('.html') &&
         !EXCLUDED_PAGES.has(entry.slice(0, -5))
       ) {
+        const verificationSource = path.join(VERIFICATION_DIR, entry);
+        if (
+          prefix === '' &&
+          /^baidu_verify_(?:codeva-)?[a-zA-Z0-9]+\.html$/.test(entry) &&
+          fs.existsSync(verificationSource)
+        ) {
+          if (
+            !fs.readFileSync(full).equals(fs.readFileSync(verificationSource))
+          ) {
+            fail(
+              'site-verification',
+              `${rel}: verification response was modified`
+            );
+          }
+          continue;
+        }
         files.push({ full, rel });
       }
     }

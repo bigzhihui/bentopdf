@@ -393,7 +393,7 @@ if (securityHeaders.length === 0) {
 // Caching mirrors nginx.conf: the service worker and workers revalidate on
 // every load, and Vite's hashed assets never change.
 const rules = [
-  ['/*', securityHeaders],
+  ['/*', [...securityHeaders, '  Cache-Control: no-transform']],
   ['/sw.js', ['  Cache-Control: no-cache']],
   ['/workers/*', ['  Cache-Control: no-cache']],
   ['/assets/*', ['  Cache-Control: public, max-age=31536000, immutable']],

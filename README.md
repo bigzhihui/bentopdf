@@ -54,6 +54,7 @@ npm run build:pages
 
 - 构建命令：`npm run build:pages`。
 - 输出目录：`dist`。
+- IndexNow 的公开验证 `.txt` 文件保存在 `public/`，构建时原样复制到站点根目录。请随源码保留；它是供搜索引擎读取的公开验证值，区别于百度 API 准入密钥和账号凭据。
 - 百度站点验证文件保存在 `site-verification/`；Pages 准备脚本会在页面处理后原样复制到站点根目录。请保留文件，以维持站点验证。
 - 本站公开配置集中在 [cloudflare/pages-config.json](cloudflare/pages-config.json)：域名、品牌、13 个禁用工具、资源地址等，文件中不放密钥。
 - 构建环境中已设置的同名变量优先生效。`SITE_URL` 改为其他域名时，相应资源地址也需调整；处理脚本会把同站资源放进构建产物。

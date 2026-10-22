@@ -144,6 +144,13 @@ function auditHtml(file, knownSlugs) {
   const html = fs.readFileSync(file.full, 'utf-8');
   const isLocalized = file.rel.split('/').some((seg) => LOCALE_DIRS.has(seg));
 
+  if (/<div\b[^>]*\bid=["']tool-grid["'][^>]*>\s*<\/div>/i.test(html)) {
+    fail(
+      'tool-links',
+      `${file.rel}: empty tool grid leaves discovery dependent on JavaScript`
+    );
+  }
+
   if (!isLocalized && /[—–]/.test(html)) {
     fail(
       'em-dash',

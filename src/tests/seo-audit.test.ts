@@ -20,7 +20,10 @@ afterEach(() => {
   }
 });
 
-function fixture(targetExists: boolean) {
+function fixture(
+  targetExists: boolean,
+  body = '<a href="/word-to-pdf">Word to PDF</a>'
+) {
   const root = mkdtempSync(join(tmpdir(), 'afeiii-seo-audit-'));
   temporaryRoots.push(root);
   mkdirSync(join(root, 'scripts'));
@@ -33,7 +36,7 @@ function fixture(targetExists: boolean) {
   writeFileSync(join(root, 'public/locales/en/tools.json'), '{}');
   writeFileSync(
     join(root, 'dist/index.html'),
-    '<html><head><title>PDF tools</title><link rel="canonical" href="https://pdf.afeiii.com"></head><body><a href="/word-to-pdf">Word to PDF</a></body></html>'
+    `<html><head><title>PDF tools</title><link rel="canonical" href="https://pdf.afeiii.com"></head><body>${body}</body></html>`
   );
   writeFileSync(
     join(root, 'dist/sitemap.xml'),
@@ -56,6 +59,20 @@ function fixture(targetExists: boolean) {
 }
 
 describe('SEO audit deployment phases', () => {
+  it('rejects an empty homepage tool grid that requires JavaScript for discovery', () => {
+    const result = fixture(true, '<div class="grid" id="tool-grid"></div>');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('[tool-links]');
+  });
+
+  it('accepts a homepage with static links inside its tool grid', () => {
+    const result = fixture(
+      true,
+      '<div id="tool-grid"><a href="/word-to-pdf">Word to PDF</a></div>'
+    );
+    expect(result.status, result.stderr).toBe(0);
+  });
+
   it('accepts links to excluded files before deployment preparation', () => {
     const result = fixture(true);
     expect(result.status, result.stderr).toBe(0);

@@ -443,7 +443,7 @@ export async function refreshMergeUI() {
   const processBtn = document.getElementById(
     'process-btn'
   ) as HTMLButtonElement;
-  if (processBtn) processBtn.disabled = false;
+  if (processBtn) processBtn.disabled = true;
 
   const wasInPageMode = mergeState.activeMode === 'page';
 
@@ -601,6 +601,8 @@ export async function refreshMergeUI() {
     newFileModeBtn.classList.add('bg-indigo-600', 'text-white');
     newPageModeBtn.classList.add('bg-gray-700', 'text-gray-300');
   }
+
+  if (processBtn) processBtn.disabled = false;
 }
 
 document.addEventListener('DOMContentLoaded', () => {

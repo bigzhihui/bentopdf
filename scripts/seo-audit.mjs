@@ -342,7 +342,7 @@ function auditHtml(file, knownSlugs) {
   }
 }
 
-function auditSitemap() {
+function auditSitemap(files) {
   const sitemapPath = path.join(DIST_DIR, 'sitemap.xml');
   if (!fs.existsSync(sitemapPath)) {
     fail('sitemap', 'dist/sitemap.xml not found');
@@ -385,14 +385,19 @@ function auditSitemap() {
     }
   }
 
-  const expectedLocales = fs
-    .readdirSync(LOCALES_DIR)
-    .filter((d) => fs.statSync(path.join(LOCALES_DIR, d)).isDirectory());
-  for (const lang of expectedLocales) {
-    if (lang === 'en') continue;
-    const hreflangPattern = new RegExp(`hreflang="${lang}"`);
-    if (!hreflangPattern.test(xml)) {
-      warn('sitemap', `sitemap has no hreflang entry for locale "${lang}"`);
+  const normalized = new Set(locs.map((url) => url.replace(/\/+$/, '')));
+  for (const file of files) {
+    if (NOINDEX_ALLOWLIST.has(path.basename(file.rel))) continue;
+    const html = fs.readFileSync(file.full, 'utf8');
+    const canonical = findOne(
+      html,
+      /<link[^>]+rel=["']canonical["'][^>]*href=["']([^"']+)["']/
+    );
+    if (canonical && !normalized.has(canonical.replace(/\/+$/, ''))) {
+      fail(
+        'sitemap-coverage',
+        `${file.rel}: canonical URL missing from sitemap: ${canonical}`
+      );
     }
   }
 }
@@ -417,7 +422,7 @@ function main() {
       .map((entry) => entry.name.replace(/\.html$/, ''))
   );
   for (const file of files) auditHtml(file, knownSlugs);
-  auditSitemap();
+  auditSitemap(files);
 
   const total = failures.length + warnings.length;
   if (total === 0) {

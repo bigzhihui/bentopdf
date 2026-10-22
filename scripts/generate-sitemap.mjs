@@ -13,32 +13,10 @@ const SITE_URL = (process.env.SITE_URL || 'https://www.bentopdf.com').replace(
   ''
 );
 const EXCLUDED_PAGES = new Set(['404', 'wasm-settings']);
-const AFEIII_PAGES = new Set(['about', 'contact', 'faq', 'privacy', 'terms']);
 
 const languages = fs.readdirSync(LOCALES_DIR).filter((file) => {
   return fs.statSync(path.join(LOCALES_DIR, file)).isDirectory();
 });
-
-const toCamelCase = (str) => {
-  return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
-};
-
-const toolsByLang = {};
-for (const lang of languages) {
-  const toolsPath = path.join(LOCALES_DIR, lang, 'tools.json');
-  toolsByLang[lang] = fs.existsSync(toolsPath)
-    ? JSON.parse(fs.readFileSync(toolsPath, 'utf-8'))
-    : {};
-}
-
-function alternateLangsFor(pageName) {
-  if (AFEIII_PAGES.has(pageName)) return ['en', 'zh'];
-  if (pageName === 'index') return languages;
-  const translationKey = toCamelCase(pageName);
-  return languages.filter(
-    (l) => l === 'en' || Boolean(toolsByLang[l][translationKey])
-  );
-}
 
 const PRIORITY_MAP = {
   index: 1.0,
@@ -143,31 +121,36 @@ function generateSitemap() {
   };
 
   let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 `;
 
+  let canonicalCount = 0;
   for (const pageName of htmlFiles) {
     const priority = getPriority(pageName);
-    const url = buildUrl('en', pageName);
     const lastmod = getLastMod(pageName);
-
-    sitemap += `  <url>
+    for (const lang of languages) {
+      const file = path.join(
+        DIST_DIR,
+        lang === 'en' ? '' : lang,
+        `${pageName}.html`
+      );
+      if (!fs.existsSync(file)) continue;
+      const html = fs.readFileSync(file, 'utf8');
+      const canonical = html.match(
+        /<link[^>]+rel=["']canonical["'][^>]*href=["']([^"']+)["']/
+      )?.[1];
+      const url = buildUrl(lang, pageName);
+      // Untranslated generated pages canonicalize to English. Only list the
+      // real, self-canonical language URLs; their HTML keeps hreflang links.
+      if (canonical !== url) continue;
+      sitemap += `  <url>
     <loc>${url}</loc>
     <lastmod>${lastmod}</lastmod>
     <priority>${priority}</priority>
-`;
-
-    for (const altLang of alternateLangsFor(pageName)) {
-      const altUrl = buildUrl(altLang, pageName);
-      sitemap += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${altUrl}"/>
-`;
-    }
-
-    const defaultUrl = buildUrl('en', pageName);
-    sitemap += `    <xhtml:link rel="alternate" hreflang="x-default" href="${defaultUrl}"/>
   </url>
 `;
+      canonicalCount++;
+    }
   }
 
   const blogDir = path.join(DIST_DIR, 'blog');
@@ -222,7 +205,7 @@ function generateSitemap() {
   fs.writeFileSync(publicSitemapPath, sitemap);
 
   console.log(
-    `✅ Sitemap generated with ${htmlFiles.length} canonical URLs (${languages.length} hreflang alternates each)`
+    `✅ Sitemap generated with ${canonicalCount + blogCount} independent canonical URLs across ${languages.length} languages`
   );
 }
 

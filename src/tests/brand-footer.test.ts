@@ -11,6 +11,10 @@ const partial = readFileSync(
 handlebars.registerPartial('footer-simple', partial);
 handlebars.registerPartial('settings-modal', '');
 handlebars.registerPartial('warning-modal', '');
+handlebars.registerPartial(
+  'tool-links-static',
+  readFileSync(resolve('src/partials/tool-links-static.html'), 'utf8')
+);
 const renderers = [
   { name: 'tool footer', render: handlebars.compile(partial) },
   {

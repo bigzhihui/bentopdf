@@ -64,6 +64,30 @@
       href="/images/apple-touch-icon.png"
     />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <style>
+      .category-filter {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        background-color: #1f2937;
+        color: #9ca3af;
+        border: 1px solid #374151;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .category-filter:hover {
+        background-color: #374151;
+        color: #fff;
+      }
+
+      .category-filter.active {
+        background-color: #4f46e5;
+        color: #fff;
+        border-color: #4f46e5;
+      }
+    </style>
   </head>
 
   <body class="antialiased bg-gray-900">
@@ -869,30 +893,5 @@
 
       renderTools();
     </script>
-
-    <style>
-      .category-filter {
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        background-color: #1f2937;
-        color: #9ca3af;
-        border: 1px solid #374151;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-size: 0.875rem;
-        font-weight: 500;
-      }
-
-      .category-filter:hover {
-        background-color: #374151;
-        color: #fff;
-      }
-
-      .category-filter.active {
-        background-color: #4f46e5;
-        color: #fff;
-        border-color: #4f46e5;
-      }
-    </style>
   </body>
 </html>

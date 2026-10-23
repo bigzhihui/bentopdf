@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "created_at": "2026-10-23T04:00:31.287628+00:00",
+  "reason": "已审阅既有 PDF 模板校验问题：标题层级、表单结构、动态预览和上游编辑器标记等。保留存量清单，仅允许数量下降；新增类别或数量增长阻止发布。本地链接和锚点必须全部通过。",
+  "minimum_pages": 2733,
+  "nu_errors": {
+    "The heading “h3” (with computed level 3) follows the heading “h1” (with computed level 1), skipping 1 heading level.": 2090,
+    "Element “img” is missing one or more of the following attributes: “src”, “srcset”.": 44,
+    "Element “div” not allowed as child of element “label” in this context. (Suppressing further errors from this subtree.)": 242,
+    "A “style” element in “body” must be the first child of its parent.": 22,
+    "Style rule “.category-filter” not allowed outside an “@scope” rule in a “style” element in “body”.": 22,
+    "Style rule “.category-filter:hover” not allowed outside an “@scope” rule in a “style” element in “body”.": 22,
+    "Style rule “.category-filter.active” not allowed outside an “@scope” rule in a “style” element in “body”.": 22,
+    "Attribute “mozdisallowselectionprint” not allowed on element “html” at this point.": 4,
+    "Bad value “true” for attribute “hidden” on element “button”.": 1,
+    "Bad value “true” for attribute “hidden” on element “option”.": 2,
+    "The “aria-labelledby” attribute must not be specified on any “p” element unless the element has a “role” value other than “caption”, “code”, “deletion”, “emphasis”, “generic”, “insertion”, “paragraph”, “presentation”, “strong”, “subscript”, or “superscript”.": 28,
+    "Element “option” without attribute “label” must not be empty.": 13,
+    "Bad value “true” for attribute “hidden” on element “div”.": 3,
+    "Attribute “aria-expanded” not allowed on element “button” at this point.": 6,
+    "Element “button” is missing required attribute “aria-checked”.": 6,
+    "Bad value “landmark” for attribute “role” on element “div”.": 1,
+    "Bad value “sectionhead” for attribute “role” on element “span”.": 5,
+    "Element “span” is missing one or more of the following attributes: “aria-valuenow”, “role”.": 1,
+    "Duplicate ID “buttons”.": 1,
+    "Stray end tag “input”.": 5,
+    "Duplicate ID “editSignatureDescriptionContainer”.": 1
+  }
+}

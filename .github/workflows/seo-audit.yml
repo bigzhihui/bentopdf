@@ -37,3 +37,10 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Build Pages distribution and audit SEO
         run: npm run build:pages
+      - name: Check HTML and local links against reviewed baseline
+        env:
+          QUALITY_SCRIPT_SHA256: 5becf9c6ed5dd4b337082f8d844aafcb35ac467baa23035052163d66db98e71e
+        run: |
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 'https://raw.githubusercontent.com/bigzhihui/afeiii-portal/a86bb6a690add16309c6b7db826b0d5a400dee4f/scripts/check_generated_quality.py' --output "${RUNNER_TEMP}/check_generated_quality.py"
+          python3 -c 'import hashlib,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"check_generated_quality.py"; assert hashlib.sha256(p.read_bytes()).hexdigest()==os.environ["QUALITY_SCRIPT_SHA256"], "Quality checker integrity mismatch"'
+          python3 "${RUNNER_TEMP}/check_generated_quality.py" --bootstrap --root dist --tools "${RUNNER_TEMP}/afeiii-quality-tools" --baseline scripts/quality-baseline.json --output "${RUNNER_TEMP}/pdf-quality.json"

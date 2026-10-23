@@ -166,30 +166,30 @@ See https://github.com/adobe-type-tools/cmap-resources
                 </div>
                 <span id="scaleSelectContainer" class="dropdownToolbarButton">
                   <select id="scaleSelect" tabindex="0" data-l10n-id="pdfjs-zoom-select">
-                    <option id="pageAutoOption" value="auto" selected="selected" data-l10n-id="pdfjs-page-scale-auto"></option>
-                    <option id="pageActualOption" value="page-actual" data-l10n-id="pdfjs-page-scale-actual"></option>
-                    <option id="pageFitOption" value="page-fit" data-l10n-id="pdfjs-page-scale-fit"></option>
-                    <option id="pageWidthOption" value="page-width" data-l10n-id="pdfjs-page-scale-width"></option>
-                    <option id="customScaleOption" value="custom" disabled="disabled" hidden="true" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 0 }'></option>
-                    <option value="0.5" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 50 }'></option>
-                    <option value="0.75" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 75 }'></option>
-                    <option value="1" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 100 }'></option>
-                    <option value="1.25" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 125 }'></option>
-                    <option value="1.5" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 150 }'></option>
-                    <option value="2" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 200 }'></option>
-                    <option value="3" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 300 }'></option>
-                    <option value="4" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 400 }'></option>
+                    <option id="pageAutoOption" value="auto" selected="selected" data-l10n-id="pdfjs-page-scale-auto">Automatic Zoom</option>
+                    <option id="pageActualOption" value="page-actual" data-l10n-id="pdfjs-page-scale-actual">Actual Size</option>
+                    <option id="pageFitOption" value="page-fit" data-l10n-id="pdfjs-page-scale-fit">Page Fit</option>
+                    <option id="pageWidthOption" value="page-width" data-l10n-id="pdfjs-page-scale-width">Page Width</option>
+                    <option id="customScaleOption" value="custom" disabled="disabled" hidden data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 0 }'>0%</option>
+                    <option value="0.5" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 50 }'>50%</option>
+                    <option value="0.75" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 75 }'>75%</option>
+                    <option value="1" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 100 }'>100%</option>
+                    <option value="1.25" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 125 }'>125%</option>
+                    <option value="1.5" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 150 }'>150%</option>
+                    <option value="2" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 200 }'>200%</option>
+                    <option value="3" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 300 }'>300%</option>
+                    <option value="4" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 400 }'>400%</option>
                   </select>
                 </span>
               </div>
               <div id="toolbarViewerRight" class="toolbarHorizontalGroup">
                 <div id="editorModeButtons" class="toolbarHorizontalGroup" role="radiogroup">
-                  <div id="editorComment" class="toolbarButtonWithContainer" hidden="true">
-                    <button id="editorCommentButton" class="toolbarButton" type="button" tabindex="0" disabled="disabled" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorCommentParamsToolbar" data-l10n-id="pdfjs-editor-comment-button">
+                  <div id="editorComment" class="toolbarButtonWithContainer" hidden>
+                    <button id="editorCommentButton" class="toolbarButton" type="button" tabindex="0" disabled="disabled" role="radio" aria-checked="false" aria-haspopup="true" aria-controls="editorCommentParamsToolbar" data-l10n-id="pdfjs-editor-comment-button">
                       <span data-l10n-id="pdfjs-editor-comment-button-label"></span>
                     </button>
                     <div class="editorParamsToolbar hidden menu" id="editorCommentParamsToolbar">
-                      <div id="editorCommentsSidebar" class="menuContainer comment sidebar" role="landmark" aria-labelledby="editorCommentsSidebarHeader">
+                      <div id="editorCommentsSidebar" class="menuContainer comment sidebar" role="region" aria-labelledby="editorCommentsSidebarHeader">
                         <div id="editorCommentsSidebarResizer" class="sidebarResizer"></div>
                         <div id="editorCommentsSidebarHeader" role="heading" aria-level="2">
                           <span class="commentCount">
@@ -206,8 +206,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                       </div>
                     </div>
                   </div>
-                  <div id="editorSignature" class="toolbarButtonWithContainer" hidden="true">
-                    <button id="editorSignatureButton" class="toolbarButton" type="button" tabindex="0" disabled="disabled" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorSignatureParamsToolbar" data-l10n-id="pdfjs-editor-signature-button">
+                  <div id="editorSignature" class="toolbarButtonWithContainer" hidden>
+                    <button id="editorSignatureButton" class="toolbarButton" type="button" tabindex="0" disabled="disabled" role="radio" aria-checked="false" aria-haspopup="true" aria-controls="editorSignatureParamsToolbar" data-l10n-id="pdfjs-editor-signature-button">
                       <span data-l10n-id="pdfjs-editor-signature-button-label"></span>
                     </button>
                     <div class="editorParamsToolbar hidden doorHangerRight menu" id="editorSignatureParamsToolbar">
@@ -219,7 +219,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                     </div>
                   </div>
                   <div id="editorHighlight" class="toolbarButtonWithContainer">
-                    <button id="editorHighlightButton" class="toolbarButton" type="button" disabled="disabled" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorHighlightParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-highlight-button">
+                    <button id="editorHighlightButton" class="toolbarButton" type="button" disabled="disabled" role="radio" aria-checked="false" aria-haspopup="true" aria-controls="editorHighlightParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-highlight-button">
                       <span data-l10n-id="pdfjs-editor-highlight-button-label"></span>
                     </button>
                     <div class="editorParamsToolbar hidden doorHangerRight" id="editorHighlightParamsToolbar">
@@ -244,7 +244,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                     </div>
                   </div>
                   <div id="editorFreeText" class="toolbarButtonWithContainer">
-                    <button id="editorFreeTextButton" class="toolbarButton" type="button" disabled="disabled" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorFreeTextParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-free-text-button">
+                    <button id="editorFreeTextButton" class="toolbarButton" type="button" disabled="disabled" role="radio" aria-checked="false" aria-haspopup="true" aria-controls="editorFreeTextParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-free-text-button">
                       <span data-l10n-id="pdfjs-editor-free-text-button-label"></span>
                     </button>
                     <div class="editorParamsToolbar hidden doorHangerRight" id="editorFreeTextParamsToolbar">
@@ -261,7 +261,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                     </div>
                   </div>
                   <div id="editorInk" class="toolbarButtonWithContainer">
-                    <button id="editorInkButton" class="toolbarButton" type="button" disabled="disabled" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorInkParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-ink-button">
+                    <button id="editorInkButton" class="toolbarButton" type="button" disabled="disabled" role="radio" aria-checked="false" aria-haspopup="true" aria-controls="editorInkParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-ink-button">
                       <span data-l10n-id="pdfjs-editor-ink-button-label"></span>
                     </button>
                     <div class="editorParamsToolbar hidden doorHangerRight" id="editorInkParamsToolbar">
@@ -282,7 +282,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                     </div>
                   </div>
                   <div id="editorStamp" class="toolbarButtonWithContainer">
-                    <button id="editorStampButton" class="toolbarButton" type="button" disabled="disabled" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorStampParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-stamp-button">
+                    <button id="editorStampButton" class="toolbarButton" type="button" disabled="disabled" role="radio" aria-checked="false" aria-haspopup="true" aria-controls="editorStampParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-stamp-button">
                       <span data-l10n-id="pdfjs-editor-stamp-button-label"></span>
                     </button>
                     <div class="editorParamsToolbar hidden doorHangerRight menu" id="editorStampParamsToolbar">
@@ -445,62 +445,62 @@ See https://github.com/adobe-type-tools/cmap-resources
         <dialog id="documentPropertiesDialog">
           <div class="row">
             <span id="fileNameLabel" data-l10n-id="pdfjs-document-properties-file-name"></span>
-            <p id="fileNameField" aria-labelledby="fileNameLabel">-</p>
+            <p role="group" id="fileNameField" aria-labelledby="fileNameLabel">-</p>
           </div>
           <div class="row">
             <span id="fileSizeLabel" data-l10n-id="pdfjs-document-properties-file-size"></span>
-            <p id="fileSizeField" aria-labelledby="fileSizeLabel">-</p>
+            <p role="group" id="fileSizeField" aria-labelledby="fileSizeLabel">-</p>
           </div>
           <div class="separator"></div>
           <div class="row">
             <span id="titleLabel" data-l10n-id="pdfjs-document-properties-title"></span>
-            <p id="titleField" aria-labelledby="titleLabel">-</p>
+            <p role="group" id="titleField" aria-labelledby="titleLabel">-</p>
           </div>
           <div class="row">
             <span id="authorLabel" data-l10n-id="pdfjs-document-properties-author"></span>
-            <p id="authorField" aria-labelledby="authorLabel">-</p>
+            <p role="group" id="authorField" aria-labelledby="authorLabel">-</p>
           </div>
           <div class="row">
             <span id="subjectLabel" data-l10n-id="pdfjs-document-properties-subject"></span>
-            <p id="subjectField" aria-labelledby="subjectLabel">-</p>
+            <p role="group" id="subjectField" aria-labelledby="subjectLabel">-</p>
           </div>
           <div class="row">
             <span id="keywordsLabel" data-l10n-id="pdfjs-document-properties-keywords"></span>
-            <p id="keywordsField" aria-labelledby="keywordsLabel">-</p>
+            <p role="group" id="keywordsField" aria-labelledby="keywordsLabel">-</p>
           </div>
           <div class="row">
             <span id="creationDateLabel" data-l10n-id="pdfjs-document-properties-creation-date"></span>
-            <p id="creationDateField" aria-labelledby="creationDateLabel">-</p>
+            <p role="group" id="creationDateField" aria-labelledby="creationDateLabel">-</p>
           </div>
           <div class="row">
             <span id="modificationDateLabel" data-l10n-id="pdfjs-document-properties-modification-date"></span>
-            <p id="modificationDateField" aria-labelledby="modificationDateLabel">-</p>
+            <p role="group" id="modificationDateField" aria-labelledby="modificationDateLabel">-</p>
           </div>
           <div class="row">
             <span id="creatorLabel" data-l10n-id="pdfjs-document-properties-creator"></span>
-            <p id="creatorField" aria-labelledby="creatorLabel">-</p>
+            <p role="group" id="creatorField" aria-labelledby="creatorLabel">-</p>
           </div>
           <div class="separator"></div>
           <div class="row">
             <span id="producerLabel" data-l10n-id="pdfjs-document-properties-producer"></span>
-            <p id="producerField" aria-labelledby="producerLabel">-</p>
+            <p role="group" id="producerField" aria-labelledby="producerLabel">-</p>
           </div>
           <div class="row">
             <span id="versionLabel" data-l10n-id="pdfjs-document-properties-version"></span>
-            <p id="versionField" aria-labelledby="versionLabel">-</p>
+            <p role="group" id="versionField" aria-labelledby="versionLabel">-</p>
           </div>
           <div class="row">
             <span id="pageCountLabel" data-l10n-id="pdfjs-document-properties-page-count"></span>
-            <p id="pageCountField" aria-labelledby="pageCountLabel">-</p>
+            <p role="group" id="pageCountField" aria-labelledby="pageCountLabel">-</p>
           </div>
           <div class="row">
             <span id="pageSizeLabel" data-l10n-id="pdfjs-document-properties-page-size"></span>
-            <p id="pageSizeField" aria-labelledby="pageSizeLabel">-</p>
+            <p role="group" id="pageSizeField" aria-labelledby="pageSizeLabel">-</p>
           </div>
           <div class="separator"></div>
           <div class="row">
             <span id="linearizedLabel" data-l10n-id="pdfjs-document-properties-linearized"></span>
-            <p id="linearizedField" aria-labelledby="linearizedLabel">-</p>
+            <p role="group" id="linearizedField" aria-labelledby="linearizedLabel">-</p>
           </div>
           <div class="buttonRow">
             <button id="documentPropertiesClose" class="dialogButton" type="button"><span data-l10n-id="pdfjs-document-properties-close-button"></span></button>
@@ -546,7 +546,7 @@ See https://github.com/adobe-type-tools/cmap-resources
         <dialog class="dialog newAltText" id="newAltTextDialog" aria-labelledby="newAltTextTitle" aria-describedby="newAltTextDescription" tabindex="0">
           <div id="newAltTextContainer" class="mainContainer">
             <div class="title">
-              <span id="newAltTextTitle" data-l10n-id="pdfjs-editor-new-alt-text-dialog-edit-label" role="sectionhead" tabindex="0"></span>
+              <span id="newAltTextTitle" data-l10n-id="pdfjs-editor-new-alt-text-dialog-edit-label" role="heading" aria-level="2" tabindex="0"></span>
             </div>
             <div id="mainContent">
               <div id="descriptionAndSettings">
@@ -563,7 +563,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                   <label for="newAltTextCreateAutomaticallyButton" class="togglerLabel" data-l10n-id="pdfjs-editor-new-alt-text-create-automatically-button-label"></label>
                 </div>
                 <div id="newAltTextDownloadModel" class="hidden">
-                  <span id="newAltTextDownloadModelDescription" data-l10n-id="pdfjs-editor-new-alt-text-ai-model-downloading-progress" aria-valuemin="0" data-l10n-args='{ "totalSize": 0, "downloadedSize": 0 }'></span>
+                  <span id="newAltTextDownloadModelDescription" role="progressbar" aria-valuenow="0" aria-labelledby="newAltTextDownloadModelDescription" data-l10n-id="pdfjs-editor-new-alt-text-ai-model-downloading-progress" aria-valuemin="0" data-l10n-args='{ "totalSize": 0, "downloadedSize": 0 }'></span>
                 </div>
               </div>
               <div id="newAltTextImagePreview"></div>
@@ -588,7 +588,7 @@ See https://github.com/adobe-type-tools/cmap-resources
         <dialog class="dialog" id="altTextSettingsDialog" aria-labelledby="altTextSettingsTitle">
           <div id="altTextSettingsContainer" class="mainContainer">
             <div class="title">
-              <span id="altTextSettingsTitle" data-l10n-id="pdfjs-editor-alt-text-settings-dialog-label" role="sectionhead" tabindex="0" class="title"></span>
+              <span id="altTextSettingsTitle" data-l10n-id="pdfjs-editor-alt-text-settings-dialog-label" role="heading" aria-level="2" tabindex="0" class="title"></span>
             </div>
             <div id="automaticAltText">
               <span data-l10n-id="pdfjs-editor-alt-text-settings-automatic-title"></span>
@@ -627,7 +627,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                 </div>
               </div>
             </div>
-            <div id="buttons" class="dialogButtonsGroup">
+            <div id="altTextSettingsButtons" class="dialogButtonsGroup">
               <button id="altTextSettingsCloseButton" type="button" class="primaryButton" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-settings-close-button"></span></button>
             </div>
           </div>
@@ -637,7 +637,7 @@ See https://github.com/adobe-type-tools/cmap-resources
           <span id="addSignatureDialogLabel" data-l10n-id="pdfjs-editor-add-signature-dialog-label"></span>
           <div id="addSignatureContainer" class="mainContainer">
             <div class="title">
-              <span role="sectionhead" data-l10n-id="pdfjs-editor-add-signature-dialog-title" tabindex="0"></span>
+              <span role="heading" aria-level="2" data-l10n-id="pdfjs-editor-add-signature-dialog-title" tabindex="0"></span>
             </div>
             <div role="tablist" id="addSignatureOptions">
               <button id="addSignatureTypeButton" type="button" role="tab" aria-selected="true" aria-controls="addSignatureTypeContainer" data-l10n-id="pdfjs-editor-add-signature-type-button" tabindex="0"></button>
@@ -645,8 +645,8 @@ See https://github.com/adobe-type-tools/cmap-resources
               <button id="addSignatureImageButton" type="button" role="tab" aria-selected="false" aria-controls="addSignatureImageContainer" data-l10n-id="pdfjs-editor-add-signature-image-button" tabindex="-1"></button>
             </div>
             <div id="addSignatureActionContainer" data-selected="type">
-              <div id="addSignatureTypeContainer" role="tabpanel" aria-labelledby="addSignatureTypeContainer">
-                <input id="addSignatureTypeInput" type="text" data-l10n-id="pdfjs-editor-add-signature-type-input" tabindex="0"></input>
+              <div id="addSignatureTypeContainer" role="tabpanel" aria-labelledby="addSignatureTypeButton">
+                <input id="addSignatureTypeInput" type="text" data-l10n-id="pdfjs-editor-add-signature-type-input" tabindex="0">
                 <div id="signatureTypeControls">
                   <label for="signatureFontSelect">Font:</label>
                   <select id="signatureFontSelect" tabindex="0">
@@ -678,7 +678,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                   <label id="addSignatureImageBrowse" for="addSignatureFilePicker" tabindex="0">
                     <a data-l10n-id="pdfjs-editor-add-signature-image-browse-link"></a>
                   </label>
-                  <input id="addSignatureFilePicker" type="file"></input>
+                  <input id="addSignatureFilePicker" type="file">
                 </div>
               </div>
               <div id="addSignatureControls">
@@ -686,20 +686,20 @@ See https://github.com/adobe-type-tools/cmap-resources
                   <div id="addSignatureDescriptionContainer">
                     <label for="addSignatureDescInput" data-l10n-id="pdfjs-editor-add-signature-description-label"></label>
                     <span id="addSignatureDescription" class="inputWithClearButton">
-                      <input id="addSignatureDescInput" type="text" data-l10n-id="pdfjs-editor-add-signature-description-input" tabindex="0"></input>
-                      <button class="clearInputButton" type="button" tabindex="0" aria-hidden="true"></button>
+                      <input id="addSignatureDescInput" type="text" data-l10n-id="pdfjs-editor-add-signature-description-input" tabindex="0">
+                      <button class="clearInputButton" type="button" tabindex="0" aria-hidden></button>
                     </span>
                   </div>
                   <button id="clearSignatureButton" type="button" data-l10n-id="pdfjs-editor-add-signature-clear-button" tabindex="0"><span data-l10n-id="pdfjs-editor-add-signature-clear-button-label"></span></button>
                 </div>
                 <div id="addSignatureSaveContainer">
-                  <input type="checkbox" id="addSignatureSaveCheckbox"></input>
+                  <input type="checkbox" id="addSignatureSaveCheckbox">
                   <label for="addSignatureSaveCheckbox" data-l10n-id="pdfjs-editor-add-signature-save-checkbox"></label>
                   <span></span>
                   <span id="addSignatureSaveWarning" data-l10n-id="pdfjs-editor-add-signature-save-warning-message"></span>
                 </div>
               </div>
-              <div id="addSignatureError" hidden="true" class="messageBar">
+              <div id="addSignatureError" hidden class="messageBar">
                 <div>
                   <div>
                     <span id="addSignatureErrorTitle" class="title" data-l10n-id="pdfjs-editor-add-signature-image-upload-error-title"></span>
@@ -717,16 +717,16 @@ See https://github.com/adobe-type-tools/cmap-resources
        </dialog>
 
        <dialog class="dialog signatureDialog" id="editSignatureDescriptionDialog" aria-labelledby="editSignatureDescriptionTitle">
-        <div id="editSignatureDescriptionContainer" class="mainContainer">
+        <div id="editSignatureDescriptionMainContainer" class="mainContainer">
           <div class="title">
-            <span id="editSignatureDescriptionTitle" role="sectionhead" data-l10n-id="pdfjs-editor-edit-signature-dialog-title" tabindex="0"></span>
+            <span id="editSignatureDescriptionTitle" role="heading" aria-level="2" data-l10n-id="pdfjs-editor-edit-signature-dialog-title" tabindex="0"></span>
           </div>
           <div id="editSignatureDescriptionAndView">
             <div id="editSignatureDescriptionContainer">
               <label for="editSignatureDescInput" data-l10n-id="pdfjs-editor-add-signature-description-label"></label>
               <span id="editSignatureDescription" class="inputWithClearButton">
-                <input id="editSignatureDescInput" type="text" data-l10n-id="pdfjs-editor-add-signature-description-input" tabindex="0"></input>
-                <button class="clearInputButton" type="button" tabindex="0" aria-hidden="true"></button>
+                <input id="editSignatureDescInput" type="text" data-l10n-id="pdfjs-editor-add-signature-description-input" tabindex="0">
+                <button class="clearInputButton" type="button" tabindex="0" aria-hidden></button>
               </span>
             </div>
             <svg id="editSignatureView" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -741,7 +741,7 @@ See https://github.com/adobe-type-tools/cmap-resources
       <dialog class="dialog commentManager" id="commentManagerDialog" aria-labelledby="commentManagerTitle">
         <div class="mainContainer">
           <div class="title" id="commentManagerToolbar">
-            <span id="commentManagerTitle" role="sectionhead" data-l10n-id="pdfjs-editor-edit-comment-dialog-title-when-adding"></span>
+            <span id="commentManagerTitle" role="heading" aria-level="2" data-l10n-id="pdfjs-editor-edit-comment-dialog-title-when-adding"></span>
           </div>
           <textarea id="commentManagerTextInput" data-l10n-id="pdfjs-editor-edit-comment-dialog-text-input" tabindex="0"></textarea>
           <div class="dialogButtonsGroup">

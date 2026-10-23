@@ -1,22 +1,9 @@
 {
   "schema": 1,
-  "created_at": "2026-10-23T06:26:43.770063+00:00",
-  "reason": "2026-10-23 修复自有模板的标题层级、label 内容、样式位置及图片预览地址，2541 条降至 77 条。剩余全部位于上游 PDF.js 查看器；只允许数量下降，新增类别或数量增长阻止通过。",
+  "created_at": "2026-10-23T07:37:47.092405+00:00",
+  "reason": "2026-10-23 修复 PDF.js 查看器重复 ID、表单结构及无障碍状态，77 条降至 4 条。仅保留四份上游查看器的 Firefox 专用 mozdisallowselectionprint 属性，避免改变选区打印保护；新增类别或数量增长仍阻止通过。",
   "minimum_pages": 2733,
   "nu_errors": {
-    "Attribute “mozdisallowselectionprint” not allowed on element “html” at this point.": 4,
-    "Bad value “true” for attribute “hidden” on element “button”.": 1,
-    "Bad value “true” for attribute “hidden” on element “option”.": 2,
-    "The “aria-labelledby” attribute must not be specified on any “p” element unless the element has a “role” value other than “caption”, “code”, “deletion”, “emphasis”, “generic”, “insertion”, “paragraph”, “presentation”, “strong”, “subscript”, or “superscript”.": 28,
-    "Element “option” without attribute “label” must not be empty.": 13,
-    "Bad value “true” for attribute “hidden” on element “div”.": 3,
-    "Attribute “aria-expanded” not allowed on element “button” at this point.": 6,
-    "Element “button” is missing required attribute “aria-checked”.": 6,
-    "Bad value “landmark” for attribute “role” on element “div”.": 1,
-    "Bad value “sectionhead” for attribute “role” on element “span”.": 5,
-    "Element “span” is missing one or more of the following attributes: “aria-valuenow”, “role”.": 1,
-    "Duplicate ID “buttons”.": 1,
-    "Stray end tag “input”.": 5,
-    "Duplicate ID “editSignatureDescriptionContainer”.": 1
+    "Attribute “mozdisallowselectionprint” not allowed on element “html” at this point.": 4
   }
 }

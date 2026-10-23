@@ -588,7 +588,11 @@ function toggleCheckedBtn(button, toggle, view = null) {
 }
 function toggleExpandedBtn(button, toggle, view = null) {
   button.classList.toggle("toggled", toggle);
-  button.setAttribute("aria-expanded", toggle);
+  // Editor modes are radios; disclosure controls keep their expanded state.
+  button.setAttribute(
+    button.getAttribute("role") === "radio" ? "aria-checked" : "aria-expanded",
+    toggle
+  );
   view?.classList.toggle("hidden", !toggle);
 }
 const calcRound = function () {

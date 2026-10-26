@@ -552,6 +552,15 @@ export default defineConfig(() => {
       format: 'es' as const,
     },
     plugins: [
+      {
+        name: 'afeiii-feedback',
+        transformIndexHtml() {
+          return [
+            { tag: 'link', attrs: { rel: 'stylesheet', href: '/engagement/feedbackfin.css' }, injectTo: 'head' },
+            { tag: 'script', attrs: { defer: true, src: '/engagement/feedbackfin.js' }, injectTo: 'head' },
+          ];
+        },
+      },
       // basicSsl(),
       handlebars({
         partialDirectory: resolve(__dirname, 'src/partials'),

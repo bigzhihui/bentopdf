@@ -1,4 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
+import { usageOperation } from '../afeiii-usage';
 import { downloadFile } from '../utils/helpers.js';
 import { state } from '../state.js';
 import { batchDecryptIfNeeded } from '../utils/password-prompt.js';
@@ -283,6 +284,7 @@ export async function merge() {
   }
 
   showLoader('Merging PDFs...');
+  const usage = usageOperation('merge-pdf');
   try {
     const jobs: MergeJob[] = [];
     const filesToMerge: MergeFile[] = [];
@@ -406,6 +408,7 @@ export async function merge() {
     mergeWorker.onmessage = (e: MessageEvent<MergeResponse>) => {
       hideLoader();
       if (e.data.status === 'success') {
+        usage.success();
         const blob = new Blob([e.data.pdfBytes], { type: 'application/pdf' });
         downloadFile(blob, 'merged.pdf');
         mergeState.mergeSuccess = true;
@@ -419,17 +422,20 @@ export async function merge() {
         );
       } else {
         console.error('Worker merge error:', e.data.message);
+        usage.failure();
         showAlert('Error', e.data.message || 'Failed to merge PDFs.');
       }
     };
 
     mergeWorker.onerror = (e) => {
+      usage.failure();
       hideLoader();
       console.error('Worker error:', e);
       showAlert('Error', 'An unexpected error occurred in the merge worker.');
     };
   } catch (e) {
     console.error('Merge error:', e);
+    usage.failure();
     showAlert(
       'Error',
       'Failed to merge PDFs. Please check that all files are valid and not password-protected.'

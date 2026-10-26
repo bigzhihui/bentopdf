@@ -1,4 +1,5 @@
 import { showLoader, hideLoader, showAlert } from '../ui.js';
+import { usageOperation } from '../afeiii-usage';
 import {
   downloadFile,
   readFileAsArrayBuffer,
@@ -396,6 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
       customSettings = convertToGrayscale ? { convertToGrayscale } : undefined;
     }
 
+    let usage: ReturnType<typeof usageOperation> | undefined;
     try {
       if (state.files.length === 0) {
         showAlert('No Files', 'Please select at least one PDF file.');
@@ -412,6 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      usage = usageOperation('compress-pdf');
       if (state.files.length === 1) {
         const originalFile = state.files[0];
 
@@ -462,6 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
           savings > 0 ? ((savings / originalFile.size) * 100).toFixed(1) : 0;
 
         downloadFile(resultBlob, originalFile.name);
+        usage.success();
 
         hideLoader();
 
@@ -527,6 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
             : 0;
 
         downloadFile(zipBlob, 'compressed-pdfs.zip');
+        usage.success();
 
         hideLoader();
 
@@ -547,6 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch (e: unknown) {
+      usage?.failure();
       hideLoader();
       console.error('[CompressPDF] Error:', e);
       showAlert(

@@ -1,4 +1,5 @@
 import createModule from '@neslinesli93/qpdf-wasm';
+import { usageEvent } from '../afeiii-usage';
 import type { QpdfInstanceExtended } from '@/types';
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { createIcons } from 'lucide';
@@ -78,6 +79,7 @@ export const downloadFile = (blob: Blob, filename: string): void => {
   a.download = filename;
   document.body.appendChild(a);
   a.click();
+  usageEvent('download');
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };

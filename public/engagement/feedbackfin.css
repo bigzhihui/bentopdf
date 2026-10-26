@@ -1,0 +1,23 @@
+.feedbackfin-trigger,.feedbackfin-dialog{font:16px/1.6 system-ui,sans-serif;color:#173d33;box-sizing:border-box}
+.feedbackfin-trigger{position:fixed;right:20px;bottom:20px;z-index:1000;border:1px solid #b8cec4;border-radius:24px;padding:10px 18px;background:#fff;box-shadow:0 3px 14px #142b251a;cursor:pointer}
+.feedbackfin-dialog{width:min(520px,calc(100% - 28px));max-height:calc(100dvh - 32px);margin:auto;padding:24px;border:1px solid #b8cec4;border-radius:18px;background:#fff;overflow:auto;text-align:left}
+.feedbackfin-dialog::backdrop{background:#10251f80}
+.feedbackfin-dialog *{box-sizing:border-box}
+.feedbackfin-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.feedbackfin-heading h2{font-size:22px;line-height:1.4;margin:0}
+.feedbackfin-close{font:24px/1 system-ui;min-width:44px;min-height:44px;border:0;border-radius:8px;background:#eff5f1;color:#173d33;cursor:pointer}
+.feedbackfin-note,.feedbackfin-preference{font-size:14px;line-height:1.65;color:#466358}
+.feedbackfin-field{display:block;font-size:15px;margin:14px 0}
+.feedbackfin-field input,.feedbackfin-field textarea,.feedbackfin-field select{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid #a9c0b5;border-radius:8px;background:#fff;color:#173d33;font:16px/1.5 system-ui,sans-serif}
+.feedbackfin-field textarea{resize:vertical;min-height:116px}
+.feedbackfin-field[hidden]{display:none!important}
+.feedbackfin-status{font-size:15px;min-height:24px;margin:8px 0;overflow-wrap:anywhere}
+.feedbackfin-actions{display:flex;align-items:center;flex-wrap:wrap;gap:16px}
+.feedbackfin-dialog a{color:#245e4c;text-decoration:underline;font-size:14px}
+.feedbackfin-submit{border:0;border-radius:8px;padding:11px 18px;background:#285d4b;color:#fff;font:16px/1.5 system-ui;cursor:pointer;min-height:44px}
+.feedbackfin-submit:disabled{opacity:.65;cursor:wait}
+.feedbackfin-preference{display:flex;gap:10px;align-items:flex-start;margin:20px 0 12px;border-top:1px solid #dce7df;padding-top:16px}
+.feedbackfin-preference input{width:18px;height:18px;flex-shrink:0;margin-top:3px}
+.feedbackfin-dialog :focus-visible,.feedbackfin-trigger:focus-visible{outline:3px solid #25896a;outline-offset:3px}
+@media(max-width:480px){.feedbackfin-dialog{padding:18px}.feedbackfin-trigger{right:12px;bottom:max(12px,env(safe-area-inset-bottom));padding:9px 14px}}
+@media print{.feedbackfin-trigger,.feedbackfin-dialog{display:none!important}}

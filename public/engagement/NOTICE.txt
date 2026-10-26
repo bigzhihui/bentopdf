@@ -1,0 +1,8 @@
+Feedback Fin
+https://github.com/buildship-ai/feedbackfin
+Copyright 2022 Rowy Inc. and Feedback Fin contributors.
+Licensed under the Apache License, Version 2.0 (see LICENSE.txt).
+
+afeiii adaptation: native dialog, Chinese labels, local assets, strict payloads,
+HTTP acknowledgement and timeout handling, idempotent retries, opt-in anonymous
+operation counters. No DOM replay, file/input capture or third-party script CDN.

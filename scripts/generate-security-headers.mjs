@@ -54,6 +54,7 @@ const ocrFontOrigins = configuredOcrFontOrigin
 
 const scriptOrigins = uniq([...wasmOrigins, ...tesseractOrigins]);
 const connectOrigins = uniq([
+  'https://afeiii.com',
   ...wasmOrigins,
   ...tesseractOrigins,
   corsProxyOrigin,

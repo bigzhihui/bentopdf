@@ -83,7 +83,12 @@ test('conflict aborts cleanly and preserves production and customized content', 
   f.commit(f.fork, 'brand.txt', '十三月 PDF 工具\n');
   const production = f.git(f.fork, 'rev-parse', 'main');
   f.commit(f.upstream, 'brand.txt', 'Changed upstream brand\n');
-  assert.throws(() => f.prepare(), /resolve conflicts manually: brand.txt/);
+  assert.throws(() => f.prepare(), (error) => {
+    assert.match(error.message, /resolve conflicts manually: brand.txt/);
+    assert.ok(error.cause instanceof Error);
+    assert.match(error.cause.message, /^git .+ failed:/);
+    return true;
+  });
   assert.equal(f.git(f.fork, 'rev-parse', 'main'), production);
   assert.equal(f.git(f.fork, 'status', '--porcelain'), '');
   assert.equal(

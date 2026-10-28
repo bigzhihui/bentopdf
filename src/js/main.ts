@@ -112,11 +112,11 @@ const init = async () => {
         (divider as HTMLElement).style.display = 'none';
       });
 
-      const brandName = __BRAND_NAME__ || 'BentoPDF';
-      document.title = `${brandName} - ${t('simpleMode.title')}`;
-
       const toolsHeader = document.getElementById('tools-header');
       if (toolsHeader) {
+        // Detail pages keep their localized title when shared startup runs.
+        const brandName = __BRAND_NAME__ || 'BentoPDF';
+        document.title = `${brandName} - ${t('simpleMode.title')}`;
         const title = toolsHeader.querySelector('h2');
         const subtitle = toolsHeader.querySelector('p');
         if (title) {

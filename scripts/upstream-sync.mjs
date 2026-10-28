@@ -44,7 +44,8 @@ export function prepareUpstreamMerge({ cwd, remote, branch, baseRef }) {
     const conflicts = git(cwd, ['diff', '--name-only', '--diff-filter=U']);
     git(cwd, ['merge', '--abort']);
     throw new Error(
-      `Upstream merge stopped; resolve conflicts manually: ${conflicts || error.message}`
+      `Upstream merge stopped; resolve conflicts manually: ${conflicts || error.message}`,
+      { cause: error }
     );
   }
   git(cwd, [

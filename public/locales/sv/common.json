@@ -386,5 +386,9 @@
     "heading": "Det här verktyget har inaktiverats",
     "message": "Det här verktyget är inte tillgängligt i din installation. Kontakta din administratör för mer information.",
     "backHome": "Tillbaka till startsidan"
+  },
+  "afeiiiIntro": {
+    "tasks": "Välj ett PDF-verktyg efter uppgift: slå ihop dokument, minska filstorleken, extrahera sidor eller identifiera text i skannade dokument.",
+    "privacy": "Det mesta av filbearbetningen sker i din webbläsare. Läs anvisningarna för varje verktyg innan du arbetar med känsliga dokument och kontrollera resultatet innan du delar det."
   }
 }

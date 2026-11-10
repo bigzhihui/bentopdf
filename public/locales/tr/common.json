@@ -386,5 +386,9 @@
     "heading": "Bu araç devre dışı bırakıldı",
     "message": "Bu araç, dağıtımınızda mevcut değil. Daha fazla bilgi için yöneticinizle iletişime geçin.",
     "backHome": "Ana Sayfaya Dön"
+  },
+  "afeiiiIntro": {
+    "tasks": "İşinize uygun PDF aracını seçin: belgeleri birleştirin, dosya boyutunu küçültün, sayfaları ayıklayın veya taramalardaki metni tanıyın.",
+    "privacy": "Dosya işlemlerinin çoğu tarayıcınızda gerçekleşir. Hassas belgelerle çalışmadan önce her aracın notlarını okuyun ve paylaşmadan önce sonucu kontrol edin."
   }
 }

@@ -386,5 +386,9 @@
     "heading": "Deze tool is uitgeschakeld",
     "message": "Deze tool is niet beschikbaar in deze implementatie. Neem contact op met de beheerder voor meer informatie.",
     "backHome": "Terug naar Startpagina"
+  },
+  "afeiiiIntro": {
+    "tasks": "Kies een PDF-tool op basis van je taak: documenten samenvoegen, bestanden verkleinen, pagina’s extraheren of tekst in scans herkennen.",
+    "privacy": "De meeste bestandsverwerking vindt plaats in je browser. Lees de aanwijzingen bij elke tool voordat je met gevoelige documenten werkt en controleer het resultaat voordat je het deelt."
   }
 }

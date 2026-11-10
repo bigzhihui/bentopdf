@@ -386,5 +386,9 @@
     "heading": "Esta herramienta ha sido desactivada",
     "message": "Esta herramienta no está disponible en tu instalación. Contacta con tu administrador para obtener más información.",
     "backHome": "Volver al inicio"
+  },
+  "afeiiiIntro": {
+    "tasks": "Elige una herramienta PDF según la tarea: combinar documentos, reducir el tamaño del archivo, extraer páginas o reconocer texto en documentos escaneados.",
+    "privacy": "La mayor parte del procesamiento se realiza en tu navegador. Consulta las notas de cada herramienta antes de trabajar con documentos sensibles y revisa el resultado antes de compartirlo."
   }
 }

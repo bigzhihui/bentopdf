@@ -386,5 +386,9 @@
     "heading": "Dieses Werkzeug wurde deaktiviert",
     "message": "Dieses Werkzeug ist in Ihrer Installation nicht verfügbar. Wenden Sie sich an Ihren Administrator, um weitere Informationen zu erhalten.",
     "backHome": "Zurück zur Startseite"
+  },
+  "afeiiiIntro": {
+    "tasks": "Wählen Sie ein PDF-Werkzeug nach Aufgabe: Dokumente zusammenführen, Dateien verkleinern, Seiten extrahieren oder Text in Scans erkennen.",
+    "privacy": "Die meisten Dateien werden in Ihrem Browser verarbeitet. Lesen Sie vor der Arbeit mit vertraulichen Dokumenten die Hinweise zum jeweiligen Werkzeug und prüfen Sie das Ergebnis vor dem Teilen."
   }
 }

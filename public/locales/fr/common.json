@@ -386,5 +386,9 @@
     "heading": "Cet outil a été désactivé",
     "message": "Cet outil n'est pas disponible dans votre déploiement. Contactez votre administrateur pour plus d'informations.",
     "backHome": "Retour à l'accueil"
+  },
+  "afeiiiIntro": {
+    "tasks": "Choisissez un outil PDF selon la tâche : fusionner des documents, réduire la taille des fichiers, extraire des pages ou reconnaître le texte de documents numérisés.",
+    "privacy": "La plupart des traitements se font dans votre navigateur. Consultez les indications de chaque outil avant de traiter des documents sensibles et vérifiez le résultat avant de le partager."
   }
 }

@@ -11,6 +11,26 @@ const PARTIAL_PATH = path.resolve(
   __dirname,
   '../src/partials/tool-links-static.html'
 );
+const englishTools = JSON.parse(
+  fs.readFileSync(
+    path.resolve(__dirname, '../public/locales/en/tools.json'),
+    'utf8'
+  )
+);
+const translationKeysByName = new Map(
+  Object.entries(englishTools)
+    .filter(([, value]) => typeof value.name === 'string')
+    .map(([key, value]) => [value.name, key])
+);
+const CATEGORY_KEYS = {
+  'Popular Tools': 'popularTools',
+  'Edit & Annotate': 'editAnnotate',
+  'Convert to PDF': 'convertToPdf',
+  'Convert from PDF': 'convertFromPdf',
+  'Organize & Manage': 'organizeManage',
+  'Optimize & Repair': 'optimizeRepair',
+  'Secure PDF': 'securePdf',
+};
 
 function escapeHtml(value) {
   return value
@@ -76,15 +96,26 @@ function generate() {
     );
     if (tools.length === 0) continue;
     for (const t of tools) seen.add(t.slug);
+    const categoryKey = CATEGORY_KEYS[category.name];
+    const categoryTranslation = categoryKey
+      ? ` data-i18n="tools:categories.${categoryKey}"`
+      : '';
     lines.push(
-      `<div class="col-span-full mt-6 first:mt-0"><h2 class="text-lg font-semibold text-white">${escapeHtml(category.name)}</h2></div>`
+      `<div class="col-span-full mt-6 first:mt-0"><h2 class="text-lg font-semibold text-white"${categoryTranslation}>${escapeHtml(category.name)}</h2></div>`
     );
     for (const tool of tools) {
       toolCount++;
+      const slugKey = tool.slug.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+      const translationKey = englishTools[slugKey]?.name
+        ? slugKey
+        : translationKeysByName.get(tool.name);
+      if (!translationKey) {
+        throw new Error(`Missing tool translation key for ${tool.slug}`);
+      }
       lines.push(
         `<a href="/${tool.slug}" class="block bg-gray-800 p-4 rounded-lg border border-gray-700 hover:bg-gray-700 transition-colors">` +
-          `<h3 class="text-white font-semibold mb-1">${escapeHtml(tool.name)}</h3>` +
-          `<p class="text-gray-400 text-sm">${escapeHtml(tool.subtitle)}</p>` +
+          `<h3 class="text-white font-semibold mb-1" data-i18n="tools:${translationKey}.name">${escapeHtml(tool.name)}</h3>` +
+          `<p class="text-gray-400 text-sm" data-i18n="tools:${translationKey}.subtitle">${escapeHtml(tool.subtitle)}</p>` +
           `</a>`
       );
     }

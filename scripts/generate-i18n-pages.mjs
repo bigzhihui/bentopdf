@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { JSDOM } from 'jsdom';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -81,6 +81,9 @@ function loadEnglishTools() {
 }
 
 const ENGLISH_TOOLS = loadEnglishTools();
+const ENGLISH_COMMON = JSON.parse(
+  fs.readFileSync(path.join(LOCALES_DIR, 'en/common.json'), 'utf8')
+);
 
 // TODO@ALAM: Let users build only a single language
 function buildUrl(langPrefix, pagePath) {
@@ -129,6 +132,31 @@ function applyServerTranslations(document, langResources) {
     const translation = resolveTranslation(langResources, key);
     if (translation) element.setAttribute('title', translation);
   });
+}
+
+function applyHomepageMetadata(document, common) {
+  if (!document.getElementById('tools-header')) return;
+  const title = `${BRAND_NAME} - ${common.simpleMode.title}`;
+  const description =
+    common.afeiiiIntro?.tasks || ENGLISH_COMMON.afeiiiIntro.tasks;
+  document.title = title;
+  document.documentElement.setAttribute('data-bentopdf-home-metadata', '');
+  for (const selector of [
+    'meta[name="title"]',
+    'meta[property="og:title"]',
+    'meta[name="twitter:title"]',
+  ]) {
+    const meta = document.querySelector(selector);
+    if (meta) meta.content = title;
+  }
+  for (const selector of [
+    'meta[name="description"]',
+    'meta[property="og:description"]',
+    'meta[name="twitter:description"]',
+  ]) {
+    const meta = document.querySelector(selector);
+    if (meta) meta.content = description;
+  }
 }
 
 const ORGANIZATION_LD_MARKER = 'data-bentopdf-organization';
@@ -269,7 +297,7 @@ function translatedLangsForFile(filenameNoExt, translations) {
   );
 }
 
-function processFileForLanguage(
+export function processFileForLanguage(
   originalContent,
   file,
   lang,
@@ -325,6 +353,10 @@ function processFileForLanguage(
       'meta[name="twitter:description"]'
     );
     if (metaTwitterDesc) metaTwitterDesc.content = description;
+  }
+
+  if (filenameNoExt === 'index') {
+    applyHomepageMetadata(document, translations[lang].common);
   }
 
   document
@@ -434,12 +466,19 @@ function processFileForLanguage(
   fs.writeFileSync(path.join(langDir, file), result);
 }
 
-function updateEnglishFile(filePath, originalContent, translatedLangs) {
+export function updateEnglishFile(filePath, originalContent, translatedLangs) {
   const filenameNoExt = path.basename(filePath, '.html');
   const dom = new JSDOM(originalContent);
   const document = dom.window.document;
 
   localizeAfeiiiPage(document, filenameNoExt, 'en');
+  if (filenameNoExt === 'index') {
+    applyServerTranslations(document, {
+      common: ENGLISH_COMMON,
+      tools: ENGLISH_TOOLS,
+    });
+    applyHomepageMetadata(document, ENGLISH_COMMON);
+  }
 
   document
     .querySelectorAll('link[rel="alternate"][hreflang]')
@@ -559,7 +598,12 @@ async function generateI18nPages() {
   console.log('✅ i18n pages generated successfully!');
 }
 
-generateI18nPages().catch((err) => {
-  console.error('❌ i18n page generation failed:', err);
-  process.exit(1);
-});
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  generateI18nPages().catch((err) => {
+    console.error('❌ i18n page generation failed:', err);
+    process.exit(1);
+  });
+}

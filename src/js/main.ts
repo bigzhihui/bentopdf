@@ -117,6 +117,13 @@ const init = async () => {
         // Detail pages keep their localized title when shared startup runs.
         const brandName = __BRAND_NAME__ || 'BentoPDF';
         document.title = `${brandName} - ${t('simpleMode.title')}`;
+        const metaTitle =
+          document.querySelector<HTMLMetaElement>('meta[name="title"]');
+        const metaDescription = document.querySelector<HTMLMetaElement>(
+          'meta[name="description"]'
+        );
+        if (metaTitle) metaTitle.content = document.title;
+        if (metaDescription) metaDescription.content = t('afeiiiIntro.tasks');
         const title = toolsHeader.querySelector('h2');
         const subtitle = toolsHeader.querySelector('p');
         if (title) {

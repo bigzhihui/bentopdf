@@ -386,5 +386,9 @@
     "heading": "Dette værktøj er deaktiveret",
     "message": "Dette værktøj er ikke tilgængeligt i din installation. Kontakt din administrator for yderligere oplysninger.",
     "backHome": "Tilbage til forsiden"
+  },
+  "afeiiiIntro": {
+    "tasks": "Vælg et PDF-værktøj efter opgave: saml dokumenter, reducer filstørrelsen, udtræk sider eller genkend tekst i scanninger.",
+    "privacy": "Det meste af filbehandlingen foregår i din browser. Læs bemærkningerne til hvert værktøj, før du arbejder med følsomme dokumenter, og kontrollér resultatet, før du deler det."
   }
 }

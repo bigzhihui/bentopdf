@@ -430,7 +430,7 @@ function rebrand(path) {
     page === 'index.html' || page === `${defaultLanguage}/index.html`;
   const homeLanguage = page.includes('/')
     ? page.split('/')[0]
-    : defaultLanguage;
+    : original.match(/<html\b[^>]*\blang=["']([^"']+)["']/i)?.[1] || 'en';
   const simpleHomeTitle =
     homeLanguage === 'zh'
       ? `${name} - 免费在线 PDF 合并、拆分、压缩与转换工具`
@@ -492,7 +492,11 @@ function rebrand(path) {
     }
   );
 
-  if (siteDescription && isHome) {
+  if (
+    siteDescription &&
+    isHome &&
+    !original.includes('data-bentopdf-home-metadata')
+  ) {
     html = html.replace(
       /(<meta (?:name|property)="(?:description|og:description|twitter:description)" content=")[^"]*"/g,
       (_, start) => `${start}${escapeAttribute(siteDescription)}"`

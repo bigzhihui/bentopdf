@@ -386,5 +386,9 @@
     "heading": "Questo strumento è stato disabilitato",
     "message": "Questo strumento non è disponibile nella tua distribuzione. Contatta il tuo amministratore per ulteriori informazioni.",
     "backHome": "Torna alla Home"
+  },
+  "afeiiiIntro": {
+    "tasks": "Scegli uno strumento PDF in base alla tua esigenza: unire documenti, ridurre le dimensioni dei file, estrarre pagine o riconoscere il testo nelle scansioni.",
+    "privacy": "La maggior parte delle elaborazioni avviene nel browser. Consulta le note di ogni strumento prima di lavorare con documenti sensibili e controlla il risultato prima di condividerlo."
   }
 }

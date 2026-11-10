@@ -386,5 +386,9 @@
     "heading": "Esta ferramenta foi desativada",
     "message": "Esta ferramenta não está disponível na sua implantação. Entre em contato com o seu administrador para mais informações.",
     "backHome": "Voltar para o Início"
+  },
+  "afeiiiIntro": {
+    "tasks": "Escolha uma ferramenta PDF de acordo com a tarefa: combinar documentos, reduzir o tamanho dos arquivos, extrair páginas ou reconhecer texto em digitalizações.",
+    "privacy": "A maior parte do processamento ocorre no seu navegador. Consulte as observações de cada ferramenta antes de trabalhar com documentos confidenciais e confira o resultado antes de compartilhá-lo."
   }
 }

@@ -383,5 +383,9 @@
     "heading": "To narzędzie zostało wyłączone",
     "message": "To narzędzie nie jest dostępne w Twoim środowisku. Skontaktuj się z administratorem, aby uzyskać więcej informacji.",
     "backHome": "Powrót do strony głównej"
+  },
+  "afeiiiIntro": {
+    "tasks": "Wybierz narzędzie PDF według zadania: łącz dokumenty, zmniejszaj rozmiar plików, wyodrębniaj strony lub rozpoznawaj tekst w skanach.",
+    "privacy": "Większość operacji na plikach odbywa się w przeglądarce. Przed pracą z poufnymi dokumentami przeczytaj uwagi dotyczące danego narzędzia i sprawdź wynik przed udostępnieniem."
   }
 }

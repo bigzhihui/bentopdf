@@ -386,5 +386,9 @@
     "heading": "Công cụ này đã bị vô hiệu hóa",
     "message": "Công cụ này không có sẵn trong môi trường triển khai của bạn. Vui lòng liên hệ quản trị viên để biết thêm thông tin.",
     "backHome": "Quay về trang chủ"
+  },
+  "afeiiiIntro": {
+    "tasks": "Chọn công cụ PDF theo nhu cầu: gộp tài liệu, giảm kích thước tệp, trích xuất trang hoặc nhận dạng văn bản trong bản quét.",
+    "privacy": "Phần lớn việc xử lý tệp diễn ra trong trình duyệt của bạn. Hãy đọc lưu ý của từng công cụ trước khi xử lý tài liệu nhạy cảm và kiểm tra kết quả trước khi chia sẻ."
   }
 }

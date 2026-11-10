@@ -386,5 +386,9 @@
     "heading": "Tento nástroj bol zakázaný",
     "message": "Tento nástroj nie je vo vašom nasadení dostupný. Pre viac informácií kontaktujte svojho administrátora.",
     "backHome": "Späť domov"
+  },
+  "afeiiiIntro": {
+    "tasks": "Vyberte si nástroj PDF podľa úlohy: zlúčte dokumenty, zmenšite veľkosť súborov, extrahujte strany alebo rozpoznajte text v skenoch.",
+    "privacy": "Väčšina spracovania súborov prebieha vo vašom prehliadači. Pred prácou s citlivými dokumentmi si prečítajte poznámky k nástroju a pred zdieľaním skontrolujte výsledok."
   }
 }

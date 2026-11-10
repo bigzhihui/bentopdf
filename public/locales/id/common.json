@@ -386,5 +386,9 @@
     "heading": "Alat ini telah dinonaktifkan",
     "message": "Alat ini tidak tersedia dalam penerapan Anda. Hubungi administrator Anda untuk informasi lebih lanjut.",
     "backHome": "Kembali ke Beranda"
+  },
+  "afeiiiIntro": {
+    "tasks": "Pilih alat PDF sesuai tugas: gabungkan dokumen, perkecil ukuran berkas, ekstrak halaman, atau kenali teks pada hasil pemindaian.",
+    "privacy": "Sebagian besar pemrosesan berkas berlangsung di browser Anda. Baca catatan setiap alat sebelum menangani dokumen sensitif dan periksa hasilnya sebelum membagikannya."
   }
 }

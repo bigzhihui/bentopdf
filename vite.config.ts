@@ -539,6 +539,20 @@ function rewriteHtmlPathsPlugin(): Plugin {
 
 export default defineConfig(() => {
   const USE_CDN = process.env.VITE_USE_CDN === 'true';
+  // The service worker deduplicates by filename, so a query version cannot
+  // replace a cached feedback widget. Give changed public assets new names.
+  const feedbackAssets = ['css', 'js'].map((extension) => {
+    const source = fs.readFileSync(
+      resolve(__dirname, `public/engagement/feedbackfin.${extension}`),
+      'utf8'
+    );
+    const hash = createHash('sha256').update(source).digest('hex').slice(0, 12);
+    return {
+      extension,
+      source,
+      fileName: `engagement/feedbackfin-${hash}.${extension}`,
+    };
+  });
 
   if (USE_CDN) {
     console.log('[Vite] Using CDN for WASM files (with local fallback)');
@@ -554,10 +568,31 @@ export default defineConfig(() => {
     plugins: [
       {
         name: 'afeiii-feedback',
-        transformIndexHtml() {
+        generateBundle() {
+          for (const asset of feedbackAssets) {
+            this.emitFile({
+              type: 'asset',
+              fileName: asset.fileName,
+              source: asset.source,
+            });
+          }
+        },
+        transformIndexHtml(_html, context) {
+          const assetPath = (extension: string) =>
+            context.server
+              ? `/engagement/feedbackfin.${extension}`
+              : `/${feedbackAssets.find((asset) => asset.extension === extension)!.fileName}`;
           return [
-            { tag: 'link', attrs: { rel: 'stylesheet', href: '/engagement/feedbackfin.css' }, injectTo: 'head' },
-            { tag: 'script', attrs: { defer: true, src: '/engagement/feedbackfin.js' }, injectTo: 'head' },
+            {
+              tag: 'link',
+              attrs: { rel: 'stylesheet', href: assetPath('css') },
+              injectTo: 'head',
+            },
+            {
+              tag: 'script',
+              attrs: { defer: true, src: assetPath('js') },
+              injectTo: 'head',
+            },
           ];
         },
       },

@@ -383,7 +383,15 @@
   },
   "afeiiiFooter": {
     "attribution": "Based on BentoPDF (AGPL-3.0).",
-    "source": "Source code"
+    "source": "Source code",
+    "navigation": "Tool navigation",
+    "information": "Site information",
+    "portal": "Home",
+    "tools": "Developer tools",
+    "pdf": "PDF tools",
+    "resume": "Resume builder",
+    "check": "Website checker",
+    "convert": "File converter"
   },
   "afeiiiIntro": {
     "tasks": "Choose a PDF tool by task: combine documents, reduce file size, extract pages, or recognize text in scans.",

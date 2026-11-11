@@ -236,6 +236,16 @@ export const applyTranslations = (): void => {
     }
   });
 
+  document.querySelectorAll('[data-i18n-aria-label]').forEach((element) => {
+    const key = element.getAttribute('data-i18n-aria-label');
+    if (key) {
+      const translation = t(key);
+      if (translation && translation !== key) {
+        element.setAttribute('aria-label', translation);
+      }
+    }
+  });
+
   document.documentElement.lang = i18next.language;
   document.documentElement.dir = i18next.language === 'ar' ? 'rtl' : 'ltr';
 };

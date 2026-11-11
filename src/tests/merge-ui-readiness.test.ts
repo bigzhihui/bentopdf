@@ -33,7 +33,7 @@ vi.mock('sortablejs', () => ({
 }));
 
 describe('merge readiness', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.resetModules();
     vi.clearAllMocks();
     vi.stubGlobal(
@@ -49,6 +49,7 @@ describe('merge readiness', () => {
         arrayBuffer: async () => new Uint8Array([1, 2]).buffer,
       } as File,
     ];
+    await (await import('../js/i18n/i18n')).initI18n();
   });
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -97,5 +98,31 @@ describe('merge readiness', () => {
     expect(
       document.querySelector<HTMLButtonElement>('#process-btn')!.disabled
     ).toBe(true);
+  });
+
+  it('renders the loaded page count using Arabic resources', async () => {
+    const i18next = (await import('i18next')).default;
+    i18next.addResourceBundle(
+      'ar',
+      'common',
+      (await import('../../public/locales/ar/common.json')).default
+    );
+    i18next.addResourceBundle(
+      'ar',
+      'tools',
+      (await import('../../public/locales/ar/tools.json')).default
+    );
+    await i18next.changeLanguage('ar');
+    mocks.getDocument.mockReturnValue({
+      promise: Promise.resolve({ numPages: 3 }),
+    });
+    const { refreshMergeUI } = await import('../js/logic/merge-pdf-page.js');
+    await refreshMergeUI();
+    expect(document.querySelector('#file-list')!.textContent).toContain(
+      'المجموع: 3'
+    );
+    expect(
+      document.querySelector<HTMLButtonElement>('#process-btn')!.disabled
+    ).toBe(false);
   });
 });

@@ -132,6 +132,62 @@ function applyServerTranslations(document, langResources) {
     const translation = resolveTranslation(langResources, key);
     if (translation) element.setAttribute('title', translation);
   });
+
+  document.querySelectorAll('[data-i18n-aria-label]').forEach((element) => {
+    const key = element.getAttribute('data-i18n-aria-label');
+    const translation = key && resolveTranslation(langResources, key);
+    if (translation) element.setAttribute('aria-label', translation);
+  });
+
+  localizeHelpStructuredData(document, langResources);
+}
+
+function localizeHelpStructuredData(document, resources) {
+  const tool = document
+    .querySelector('h1[data-i18n^="tools:"]')
+    ?.getAttribute('data-i18n')
+    ?.match(/^tools:(mergePdf|compressPdf)\.name$/)?.[1];
+  if (!tool || !resources.tools?.[tool]?.help) return;
+  const text = (element) => element?.textContent.replace(/\s+/g, ' ').trim();
+  const steps =
+    tool === 'mergePdf'
+      ? ['upload', 'order', 'merge', 'download']
+      : ['upload', 'algorithm', 'level', 'customize', 'download'];
+  for (const script of document.querySelectorAll(
+    'script[type="application/ld+json"]'
+  )) {
+    const data = JSON.parse(script.textContent);
+    if (data['@type'] === 'FAQPage') {
+      data.mainEntity = [...document.querySelectorAll('.faq-d')].map(
+        (item) => ({
+          '@type': 'Question',
+          name: text(item.querySelector('.faq-d-q')),
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: text(item.querySelector('.faq-d-a')),
+          },
+        })
+      );
+    } else if (data['@type'] === 'HowTo') {
+      data.name = resolveTranslation(resources, `tools:${tool}.name`);
+      data.description = resolveTranslation(
+        resources,
+        `tools:${tool}.subtitle`
+      );
+      data.step = steps.map((step, index) => {
+        const heading = document.querySelector(
+          `[data-i18n="tools:${tool}.help.${step}Title"]`
+        );
+        return {
+          '@type': 'HowToStep',
+          position: index + 1,
+          name: text(heading),
+          text: text(heading?.parentElement.querySelector('p')),
+        };
+      });
+    } else continue;
+    script.textContent = JSON.stringify(data, null, 2);
+  }
 }
 
 function applyHomepageMetadata(document, common) {

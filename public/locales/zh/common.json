@@ -383,7 +383,15 @@
   },
   "afeiiiFooter": {
     "attribution": "基于开源项目 BentoPDF（AGPL-3.0）。",
-    "source": "本站源码"
+    "source": "本站源码",
+    "navigation": "十三月工具导航",
+    "information": "站点信息",
+    "portal": "十三月主站",
+    "tools": "开发工具",
+    "pdf": "PDF 工具",
+    "resume": "在线简历",
+    "check": "网站检测",
+    "convert": "格式转换"
   },
   "afeiiiIntro": {
     "tasks": "按任务找到需要的 PDF 工具：合并文件、减小体积、提取页面，或识别扫描件中的文字。",

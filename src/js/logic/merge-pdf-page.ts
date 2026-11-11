@@ -1,3 +1,4 @@
+import { t } from '../i18n/i18n';
 import { showLoader, hideLoader, showAlert } from '../ui.js';
 import { usageOperation } from '../afeiii-usage';
 import { downloadFile } from '../utils/helpers.js';
@@ -165,12 +166,12 @@ async function renderPageMergeThumbnails() {
       fileNamePara.className =
         'text-xs text-gray-400 truncate w-full text-center';
       const fullTitle = displayName
-        ? `${displayName} (page ${pageNumber})`
-        : `Page ${pageNumber}`;
+        ? `${displayName} (${t('tools:mergePdf.messages.pageLabel', { number: pageNumber })})`
+        : t('tools:mergePdf.messages.pageLabel', { number: pageNumber });
       fileNamePara.title = fullTitle;
       fileNamePara.textContent = displayName
-        ? `${displayName.substring(0, 10)}... (p${pageNumber})`
-        : `Page ${pageNumber}`;
+        ? `${displayName.substring(0, 10)}... (${t('tools:mergePdf.messages.pageLabel', { number: pageNumber })})`
+        : t('tools:mergePdf.messages.pageLabel', { number: pageNumber });
 
       wrapper.append(imgContainer, fileNamePara);
       return wrapper;
@@ -200,7 +201,7 @@ async function renderPageMergeThumbnails() {
           lazyLoadMargin: '300px',
           onProgress: () => {
             currentPageNumber++;
-            showLoader(`Rendering page previews...`);
+            showLoader(t('tools:mergePdf.messages.previewing'));
           },
           onBatchComplete: () => {
             createIcons({ icons });
@@ -217,7 +218,7 @@ async function renderPageMergeThumbnails() {
     initializePageThumbnailsSortable();
   } catch (error) {
     console.error('Error rendering page thumbnails:', error);
-    showAlert('Error', 'Failed to render page thumbnails');
+    showAlert(t('common.error'), t('tools:mergePdf.messages.previewFailed'));
   } finally {
     hideLoader();
     mergeState.isRendering = false;
@@ -283,7 +284,7 @@ export async function merge() {
     return;
   }
 
-  showLoader('Merging PDFs...');
+  showLoader(t('tools:mergePdf.messages.merging'));
   const usage = usageOperation('merge-pdf');
   try {
     const jobs: MergeJob[] = [];
@@ -371,7 +372,7 @@ export async function merge() {
     }
 
     if (jobs.length === 0) {
-      showAlert('Error', 'No files or pages selected to merge.');
+      showAlert(t('common.error'), t('tools:mergePdf.messages.none'));
       hideLoader();
       return;
     }
@@ -413,8 +414,8 @@ export async function merge() {
         downloadFile(blob, 'merged.pdf');
         mergeState.mergeSuccess = true;
         showAlert(
-          'Success',
-          'PDFs merged successfully!',
+          t('common.success'),
+          t('tools:mergePdf.messages.merged'),
           'success',
           async () => {
             await resetState();
@@ -423,7 +424,10 @@ export async function merge() {
       } else {
         console.error('Worker merge error:', e.data.message);
         usage.failure();
-        showAlert('Error', e.data.message || 'Failed to merge PDFs.');
+        showAlert(
+          t('common.error'),
+          e.data.message || t('tools:mergePdf.messages.failed')
+        );
       }
     };
 
@@ -431,15 +435,12 @@ export async function merge() {
       usage.failure();
       hideLoader();
       console.error('Worker error:', e);
-      showAlert('Error', 'An unexpected error occurred in the merge worker.');
+      showAlert(t('common.error'), t('tools:mergePdf.messages.workerFailed'));
     };
   } catch (e) {
     console.error('Merge error:', e);
     usage.failure();
-    showAlert(
-      'Error',
-      'Failed to merge PDFs. Please check that all files are valid and not password-protected.'
-    );
+    showAlert(t('common.error'), t('tools:mergePdf.messages.invalid'));
     hideLoader();
   }
 }
@@ -453,14 +454,14 @@ export async function refreshMergeUI() {
 
   const wasInPageMode = mergeState.activeMode === 'page';
 
-  showLoader('Loading PDF documents...');
+  showLoader(t('tools:mergePdf.messages.loading'));
   try {
     mergeState.pdfDocs = {};
     mergeState.pdfBytes = {};
 
     hideLoader();
     state.files = await batchDecryptIfNeeded(state.files);
-    showLoader('Loading PDF documents...');
+    showLoader(t('tools:mergePdf.messages.loading'));
 
     for (let i = 0; i < state.files.length; i++) {
       const file = state.files[i];
@@ -478,7 +479,7 @@ export async function refreshMergeUI() {
     }
   } catch (error) {
     console.error('Error loading PDFs:', error);
-    showAlert('Error', 'Failed to load one or more PDF files');
+    showAlert(t('common.error'), t('tools:mergePdf.messages.loadFailed'));
     return;
   } finally {
     hideLoader();
@@ -529,14 +530,16 @@ export async function refreshMergeUI() {
     const label = document.createElement('label');
     label.htmlFor = `range-${safeFileName}`;
     label.className = 'text-xs text-gray-400';
-    label.textContent = `Pages (e.g., 1-3, 5) - Total: ${pageCount}`;
+    label.textContent = t('tools:mergePdf.messages.rangeLabel', {
+      count: pageCount,
+    });
 
     const input = document.createElement('input');
     input.type = 'text';
     input.id = `range-${safeFileName}`;
     input.className =
       'w-full bg-gray-800 border border-gray-600 text-white rounded-md p-2 text-sm mt-1 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors';
-    input.placeholder = 'Leave blank for all pages';
+    input.placeholder = t('tools:mergePdf.messages.rangePlaceholder');
 
     inputWrapper.append(label, input);
 
@@ -544,7 +547,7 @@ export async function refreshMergeUI() {
     deleteBtn.className =
       'text-red-400 hover:text-red-300 p-2 flex-shrink-0 self-end';
     deleteBtn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
-    deleteBtn.title = 'Remove file';
+    deleteBtn.title = t('tools:mergePdf.messages.removeFile');
     deleteBtn.onclick = (e) => {
       e.stopPropagation();
       state.files = state.files.filter((_, i) => i !== index);
